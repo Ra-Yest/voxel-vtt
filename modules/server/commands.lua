@@ -1,13 +1,14 @@
 -- server/commands.lua
 -- Слой: server
--- Спека: specs/server-commands.md
--- Назначение: Реестр серверных команд MVP-0: SpawnToken, MoveToken, RemoveToken, Roll, Chat.
+-- Спека: specs/server-commands.md, specs/net-split-server.md
+-- Назначение: Реестр серверных команд MVP-0: SpawnToken, MoveToken, RemoveToken, Roll, Chat, SetBlock.
 --   Приём намерений, проверка схемы, валидация прав, вызов обработчика и логирование.
 -- Публичные функции:
 --   register(name, def)
---   dispatch(name, sender_id, payload, table_session)
+--   dispatch(name, sender_id, payload, ctx)
+--   execute(name, actor, payload)
 --   get(name)
---   init()
+--   init(tokens_mod, world_mod)
 
 local log = require("core/log")
 local schema = require("core/schema")
@@ -16,6 +17,8 @@ local gm_rules = require("core/gm_rules")
 local M = {}
 
 M.registry = {}
+M.tokens = nil
+M.world = nil
 
 -- Регистрация команды в реестре
 function M.register(name, def)
@@ -28,22 +31,21 @@ function M.register(name, def)
     log("command_registered", { name = name })
 end
 
--- Получение определения команды
+-- Получение определения команды (без автоинициализации)
 function M.get(name)
-    if not M.registry[name] and next(M.registry) == nil then
-        M.init()
-    end
     return M.registry[name]
 end
 
 -- Диспетчеризация входящей команды
-function M.dispatch(name, sender_id, payload, table_session)
+function M.dispatch(name, sender_id, payload, ctx)
     log("command", { name = name, sender_id = sender_id })
-    local cmd = M.registry[name]
-    if not cmd and next(M.registry) == nil then
-        M.init()
-        cmd = M.registry[name]
+
+    if next(M.registry) == nil then
+        log("commands_not_initialized", { name = name })
+        return false, "Неизвестная команда: " .. tostring(name)
     end
+
+    local cmd = M.registry[name]
     if not cmd then
         log("command_unknown", { name = name, sender_id = sender_id })
         return false, "Неизвестная команда: " .. tostring(name)
@@ -57,8 +59,8 @@ function M.dispatch(name, sender_id, payload, table_session)
     end
 
     -- 2. Проверка прав (GM vs Player)
-    local is_gm = table_session and table_session.is_gm and table_session.is_gm(sender_id) or false
-    local check_ok, allowed, reason = pcall(cmd.check, sender_id, payload, is_gm, table_session)
+    local is_gm = ctx and ctx.is_gm and ctx.is_gm(sender_id) or false
+    local check_ok, allowed, reason = pcall(cmd.check, sender_id, payload, is_gm, ctx)
     if not check_ok then
         log("command_error", { name = name, sender_id = sender_id, error = "check failed: " .. tostring(allowed) })
         return false, tostring(allowed)
@@ -69,7 +71,7 @@ function M.dispatch(name, sender_id, payload, table_session)
     end
 
     -- 3. Исполнение команды
-    local ok, res = pcall(cmd.handler, sender_id, payload, table_session)
+    local ok, res = pcall(cmd.handler, sender_id, payload, ctx)
     if not ok then
         log("command_error", { name = name, sender_id = sender_id, error = tostring(res) })
         return false, tostring(res)
@@ -83,69 +85,94 @@ function M.dispatch(name, sender_id, payload, table_session)
     return true, res
 end
 
+-- Единая точка исполнения команд от актора
+function M.execute(name, actor, payload)
+    if not actor or type(actor) ~= "table" or not actor.id or actor.id == "" then
+        log("auth_denied", { name = name, reason = "sender_unknown" })
+        return false, "sender_unknown"
+    end
+
+    local ctx = {
+        tokens_module = M.tokens,
+        world_module = M.world,
+        is_gm = function(id) return id == actor.id and actor.is_master == true end,
+    }
+    return M.dispatch(name, actor.id, payload, ctx)
+end
+
 -- Инициализация базовых команд MVP-0
 function M.init(tokens_mod, world_mod)
     M.tokens = tokens_mod or M.tokens
     M.world = world_mod or M.world
+
     M.register("SpawnToken", {
-        check = function(sender_id, payload, is_gm, table_session)
+        check = function(sender_id, payload, is_gm, ctx)
             local allowed, reason = gm_rules.can_spawn_token(sender_id, is_gm, payload.owner)
             if not allowed then
                 return false, reason
             end
             if payload.id ~= nil then
-                local tokens_m = (table_session and table_session.tokens_module) or M.tokens or package.loaded["server/tokens"] or require("server/tokens")
-                if tokens_m and tokens_m.get and tokens_m.get(payload.id) ~= nil then
+                local tokens_m = (ctx and ctx.tokens_module) or M.tokens
+                if not (tokens_m and tokens_m.get) then
+                    error("tokens не инициализирован")
+                end
+                if tokens_m.get(payload.id) ~= nil then
                     return false, "Токен с таким id уже существует"
                 end
             end
             return true
         end,
-        handler = function(sender_id, payload, table_session)
-            local tokens_m = (table_session and table_session.tokens_module) or M.tokens or package.loaded["server/tokens"] or require("server/tokens")
-            if tokens_m and tokens_m.spawn then
-                local tid = tokens_m.spawn(payload.cell, {
-                    id = payload.id,
-                    name = payload.name,
-                    asset_id = payload.asset_id,
-                    owner_id = payload.owner,
-                })
-                return { token_id = tid }
+        handler = function(sender_id, payload, ctx)
+            local tokens_m = (ctx and ctx.tokens_module) or M.tokens
+            if not (tokens_m and tokens_m.spawn) then
+                error("tokens не инициализирован")
             end
-            return { token_id = payload.id or ("token_" .. tostring(os.time())) }
+            local tid = tokens_m.spawn(payload.cell, {
+                id = payload.id,
+                name = payload.name,
+                asset_id = payload.asset_id,
+                owner_id = payload.owner,
+            })
+            return { token_id = tid }
         end,
     })
 
     M.register("SetTokenOwner", {
-        check = function(sender_id, payload, is_gm, table_session)
+        check = function(sender_id, payload, is_gm, ctx)
             local allowed, reason = gm_rules.can_set_token_owner(sender_id, is_gm)
             if not allowed then
                 return false, reason
             end
-            local tokens_m = (table_session and table_session.tokens_module) or M.tokens or package.loaded["server/tokens"] or require("server/tokens")
-            local token = tokens_m and tokens_m.get and tokens_m.get(payload.token_id)
+            local tokens_m = (ctx and ctx.tokens_module) or M.tokens
+            if not (tokens_m and tokens_m.get) then
+                error("tokens не инициализирован")
+            end
+            local token = tokens_m.get(payload.token_id)
             if not token then
                 return false, "Токен не найден"
             end
             return true
         end,
-        handler = function(sender_id, payload, table_session)
-            local tokens_m = (table_session and table_session.tokens_module) or M.tokens or package.loaded["server/tokens"] or require("server/tokens")
-            if tokens_m and tokens_m.set_owner then
-                local ok, err = tokens_m.set_owner(payload.token_id, payload.owner)
-                if not ok then
-                    error(err or "tokens.set_owner failed")
-                end
-                return { token_id = payload.token_id, owner = payload.owner }
+        handler = function(sender_id, payload, ctx)
+            local tokens_m = (ctx and ctx.tokens_module) or M.tokens
+            if not (tokens_m and tokens_m.set_owner) then
+                error("tokens не инициализирован")
             end
-            return true
+            local ok, err = tokens_m.set_owner(payload.token_id, payload.owner)
+            if not ok then
+                error(err or "tokens.set_owner failed")
+            end
+            return { token_id = payload.token_id, owner = payload.owner }
         end,
     })
 
     M.register("MoveToken", {
-        check = function(sender_id, payload, is_gm, table_session)
-            local tokens_m = (table_session and table_session.tokens_module) or M.tokens or package.loaded["server/tokens"] or require("server/tokens")
-            local token = tokens_m and tokens_m.get and tokens_m.get(payload.token_id)
+        check = function(sender_id, payload, is_gm, ctx)
+            local tokens_m = (ctx and ctx.tokens_module) or M.tokens
+            if not (tokens_m and tokens_m.get) then
+                error("tokens не инициализирован")
+            end
+            local token = tokens_m.get(payload.token_id)
             if not token then
                 return false, "Токен не найден"
             end
@@ -164,38 +191,41 @@ function M.init(tokens_mod, world_mod)
             end
             return true
         end,
-        handler = function(sender_id, payload, table_session)
-            local tokens_m = (table_session and table_session.tokens_module) or M.tokens or package.loaded["server/tokens"] or require("server/tokens")
-            if tokens_m and tokens_m.move then
-                local ok, err = tokens_m.move(payload.token_id, payload.target_cell)
-                if not ok then
-                    error(err or "tokens.move failed")
-                end
-                return ok
+        handler = function(sender_id, payload, ctx)
+            local tokens_m = (ctx and ctx.tokens_module) or M.tokens
+            if not (tokens_m and tokens_m.move) then
+                error("tokens не инициализирован")
             end
-            return true
+            local ok, err = tokens_m.move(payload.token_id, payload.target_cell)
+            if not ok then
+                error(err or "tokens.move failed")
+            end
+            return ok
         end,
     })
 
     M.register("RemoveToken", {
-        check = function(sender_id, payload, is_gm, table_session)
-            local tokens_m = (table_session and table_session.tokens_module) or M.tokens or package.loaded["server/tokens"] or require("server/tokens")
-            local token = tokens_m and tokens_m.get and tokens_m.get(payload.token_id)
+        check = function(sender_id, payload, is_gm, ctx)
+            local tokens_m = (ctx and ctx.tokens_module) or M.tokens
+            if not (tokens_m and tokens_m.get) then
+                error("tokens не инициализирован")
+            end
+            local token = tokens_m.get(payload.token_id)
             if not token then
                 return false, "Токен не найден"
             end
             return gm_rules.can_remove_token(token, sender_id, is_gm)
         end,
-        handler = function(sender_id, payload, table_session)
-            local tokens_m = (table_session and table_session.tokens_module) or M.tokens or package.loaded["server/tokens"] or require("server/tokens")
-            if tokens_m and tokens_m.remove then
-                local ok, err = tokens_m.remove(payload.token_id)
-                if not ok then
-                    error(err or "tokens.remove failed")
-                end
-                return ok
+        handler = function(sender_id, payload, ctx)
+            local tokens_m = (ctx and ctx.tokens_module) or M.tokens
+            if not (tokens_m and tokens_m.remove) then
+                error("tokens не инициализирован")
             end
-            return true
+            local ok, err = tokens_m.remove(payload.token_id)
+            if not ok then
+                error(err or "tokens.remove failed")
+            end
+            return ok
         end,
     })
 
@@ -203,7 +233,7 @@ function M.init(tokens_mod, world_mod)
         check = function(sender_id, payload, is_gm)
             return true
         end,
-        handler = function(sender_id, payload, table_session)
+        handler = function(sender_id, payload, ctx)
             -- Заглушка: вызов gm_rules.parse_roll
             local parsed = gm_rules.parse_roll(payload.formula)
             return { parsed = parsed, result = 20 }
@@ -214,23 +244,23 @@ function M.init(tokens_mod, world_mod)
         check = function(sender_id, payload, is_gm)
             return true
         end,
-        handler = function(sender_id, payload, table_session)
+        handler = function(sender_id, payload, ctx)
             -- Заглушка: рассылка сообщения чата
             return true
         end,
     })
 
     M.register("SetBlock", {
-        check = function(sender_id, payload, is_gm, table_session)
+        check = function(sender_id, payload, is_gm, ctx)
             return gm_rules.can_modify_world(sender_id, is_gm)
         end,
-        handler = function(sender_id, payload, table_session)
-            local world_m = (table_session and table_session.world_module) or M.world or package.loaded["server/world"] or require("server/world")
-            if world_m and world_m.set_block then
-                local res = world_m.set_block(payload.x, payload.y, payload.z, payload.id or 1, 0)
-                return res
+        handler = function(sender_id, payload, ctx)
+            local world_m = (ctx and ctx.world_module) or M.world
+            if not (world_m and world_m.set_block) then
+                error("world не инициализирован")
             end
-            return true
+            local res = world_m.set_block(payload.x, payload.y, payload.z, payload.id or 1, 0)
+            return res
         end,
     })
 

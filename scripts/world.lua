@@ -18,13 +18,15 @@ function on_world_open()
             local server_world = require("server/world")
             local tokens = require("server/tokens")
             local commands = require("server/commands")
-            commands.init(tokens)
-            local block_interceptor = require("net/block_interceptor")
-            block_interceptor.init(api, server_world, {
-                tokens_module = tokens,
-                commands_module = commands,
+            commands.init(tokens, server_world)
+            require("net/boot_server").start(api, {
+                execute = commands.execute,
+                token_id_of = function(uid)
+                    local t = tokens.get_by_entity_id(uid)
+                    return t and t.id or nil
+                end,
+                read_block = server_world.get_block_state,
             })
-            require("net/block_guard").init(api, { read_block = server_world.get_block_state })
         -- docs: docs/neutron/api/index.md:10: elseif _G["$Multiplayer"].side == "client" then
         elseif m.side == "client" then
             log("client_started", { side = "client" })
