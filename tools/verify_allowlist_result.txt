@@ -1,0 +1,1013 @@
+=== Проверка белого списка API ===
+Записей: 467 | подтверждено по имени: 370 | слабое совпадение: 97 | неверный путь: 0 | нет файла/ссылки: 0 | не найдено: 0
+
+--- ПРОБЛЕМЫ (вероятно выдумано или неверная ссылка) ---
+нет
+
+--- СЛАБОЕ СОВПАДЕНИЕ (найдено только имя функции, проверить глазами) ---
+Camera:get_fov  [только имя функции, libcameras.md]
+      > cam:get_fov() -> number
+Camera:get_front  [только имя функции, libcameras.md]
+      > cam:get_front() -> vec3
+Camera:get_index  [только имя функции, libcameras.md]
+      > cam:get_index() -> int
+Camera:get_name  [только имя функции, libcameras.md]
+      > cam:get_name() -> str
+Camera:get_pos  [только имя функции, libcameras.md]
+      > cam:get_pos() -> vec3
+Camera:get_right  [только имя функции, libcameras.md]
+      > cam:get_right() -> vec3
+Camera:get_rot  [только имя функции, libcameras.md]
+      > cam:get_rot() -> mat4
+Camera:get_up  [только имя функции, libcameras.md]
+      > cam:get_up() -> vec3
+Camera:get_zoom  [только имя функции, libcameras.md]
+      > cam:get_zoom() -> number
+Camera:is_flipped  [только имя функции, libcameras.md]
+      > cam:is_flipped() -> bool
+Camera:is_perspective  [только имя функции, libcameras.md]
+      > cam:is_perspective() -> bool
+Camera:look_at  [только имя функции, libcameras.md]
+      > cam:look_at(point:vec3)
+Camera:set_flipped  [только имя функции, libcameras.md]
+      > cam:set_flipped(flipped: bool)
+Camera:set_fov  [только имя функции, libcameras.md]
+      > cam:set_fov(fov: number)
+Camera:set_perspective  [только имя функции, libcameras.md]
+      > cam:set_perspective(perspective: bool)
+Camera:set_pos  [только имя функции, libcameras.md]
+      > cam:set_pos(pos:vec3)
+Camera:set_rot  [только имя функции, libcameras.md]
+      > cam:set_rot(rot:mat4)
+Camera:set_zoom  [только имя функции, libcameras.md]
+      > cam:set_zoom(zoom: number)
+Entity:def_index  [только имя функции, ecs.md]
+      > entity:def_index() -> int
+Entity:def_name  [только имя функции, ecs.md]
+      > entity:def_name() -> str
+Entity:despawn  [только имя функции, ecs.md]
+      > entity:despawn()
+Entity:get_component  [только имя функции, ecs.md]
+      > entity:get_component(name: str) -> component or nil
+Entity:get_player  [только имя функции, ecs.md]
+      > entity:get_player() -> int or nil
+Entity:get_uid  [только имя функции, ecs.md]
+      > entity:get_uid() -> int
+Entity:has_component  [только имя функции, ecs.md]
+      > entity:has_component(name: str) -> bool
+Entity:require_component  [только имя функции, ecs.md]
+      > entity:require_component(name: str) -> component
+Entity:set_enabled  [только имя функции, ecs.md]
+      > entity:set_enabled(name: str, enable: bool)
+Module:build  [только имя функции, module.md]
+      > return self:build()
+ParticleObj:get_origin  [только имя функции, particles.md]
+      > | `particle:get_origin() -> vec3 / uid` | Получение `origin`. |
+ParticleObj:get_pos  [только имя функции, particles.md]
+      > | `particle:get_pos() -> vec3` | Позиция эмитера. |
+ParticleObj:is_alive  [только имя функции, particles.md]
+      > | `particle:is_alive() -> boolean` | Состояние эмитера. |
+ParticleObj:set_origin  [только имя функции, particles.md]
+      > | `particle:set_origin(origin: vec3 / uid)` | Изменение `origin`. |
+ParticleObj:stop  [только имя функции, particles.md]
+      > | `particle:stop()` | Удаление эмитера частиц. |
+Session:add  [только имя функции, db.md]
+      > session:add("users", {
+Session:all  [только имя функции, db.md]
+      > | `:all()` | Возвращает все элементы. |
+Session:count  [только имя функции, db.md]
+      > | `:count()` | Возвращает количество элементов. |
+Session:delete  [только имя функции, db.md]
+      > session:delete("users", {
+Session:filter  [только имя функции, db.md]
+      > :filter({hp = {["=>"] = 15}})
+Session:first  [только имя функции, db.md]
+      > | `:first()` | Возвращает первый элемент. |
+Session:last  [только имя функции, db.md]
+      > | `:last()` | Возвращает последний элемент. |
+Session:limit  [только имя функции, db.md]
+      > :limit(10)
+Session:order_by  [только имя функции, db.md]
+      > | `:order_by(field, [reverse])` | Сортирует результаты по полю. |
+Session:query  [только имя функции, db.md]
+      > local results = session:query("users")
+Session:remove_table  [только имя функции, db.md]
+      > session:remove_table("users")
+Session:update  [только имя функции, db.md]
+      > session:update("users", primary_key_value, {
+Speaker:get_duration  [только имя функции, audio.md]
+      > | `speaker:get_duration() -> number` | Возвращает `0`, если продолжительност...
+Speaker:get_pitch  [только имя функции, audio.md]
+      > | `speaker:get_pitch() -> number` | Получение скорости звука. |
+Speaker:get_position  [только имя функции, audio.md]
+      > | `speaker:get_position() -> number, number, number` | Позиция в мире. |
+Speaker:get_time  [только имя функции, audio.md]
+      > | `speaker:get_time() -> number` | Текущее время воспроизведения. |
+Speaker:get_time_left  [только имя функции, audio.md]
+      > | `speaker:get_time_left()` | Возвращает `nil`, если продолжительность не ...
+Speaker:get_velocity  [только имя функции, audio.md]
+      > | `speaker:get_velocity() -> number, number, number` | Скорость движения источника. |
+Speaker:get_volume  [только имя функции, audio.md]
+      > | `speaker:get_volume() -> number` | Получение громкости. |
+Speaker:is_loop  [только имя функции, audio.md]
+      > | `speaker:is_loop() -> boolean` | Проверка зацикливания. |
+Speaker:set_loop  [только имя функции, audio.md]
+      > | `speaker:set_loop(loop: boolean)` | Установка зацикливания. |
+Speaker:set_pitch  [только имя функции, audio.md]
+      > | `speaker:set_pitch(pitch: number)` | Установка скорости звука. |
+Speaker:set_position  [только имя функции, audio.md]
+      > | `speaker:set_position(x, y, z)` | Установка позиции. |
+Speaker:set_time  [только имя функции, audio.md]
+      > | `speaker:set_time(time: number)` | Установка времени воспроизведения. |
+Speaker:set_velocity  [только имя функции, audio.md]
+      > | `speaker:set_velocity(x, y, z)` | Установка скорости. |
+State:clear  [только имя функции, console.md]
+      > | `state:clear()` | Выход из состояния. |
+State:get_data  [только имя функции, console.md]
+      > | `state:get_data([key: string]) -> any \| nil` | Получение данных. Если `key` не ук...
+State:move_to  [только имя функции, console.md]
+      > | `state:move_to(new_state: State)` | Переход между состояниями. |
+State:update_data  [только имя функции, console.md]
+      > | `state:update_data(key: string, data: any)` | Сохранение данных в хранилище с...
+Text:add_blind  [только имя функции, text3d.md]
+      > | `text:add_blind(player: Player)` | Добавляет игрока в список тех, кто **не*...
+Text:add_sighted  [только имя функции, text3d.md]
+      > | `text:add_sighted(player: Player)` | Добавляет игрока в список тех, кто **в...
+Text:get_axis_x  [только имя функции, text3d.md]
+      > text3d.get_axis_x(id)
+Text:get_axis_y  [только имя функции, text3d.md]
+      > text3d.get_axis_y(id)
+Text:get_entity  [только имя функции, text3d.md]
+      > | `text:get_entity() -> int` | Сущность, к которой привязан текст. |
+Text:get_text  [только имя функции, text3d.md]
+      > text3d.get_text(id)
+Text:hide  [только имя функции, text3d.md]
+      > text3d.hide(id)
+Text:remove_blind  [только имя функции, text3d.md]
+      > | `text:remove_blind(player: Player)` | Убирает игрока из списка blind. |
+Text:remove_sighted  [только имя функции, text3d.md]
+      > | `text:remove_sighted(player: Player)` | Убирает игрока из списка sighted. |
+Text:set_axis_x  [только имя функции, text3d.md]
+      > text3d.set_axis_x(id, axis)
+Text:set_axis_y  [только имя функции, text3d.md]
+      > text3d.set_axis_y(id, axis)
+Text:set_entity  [только имя функции, text3d.md]
+      > | `text:set_entity(entity: int)` | Установка привязки к сущности. |
+Text:set_rotation  [только имя функции, text3d.md]
+      > text3d.set_rotation(id, rotation)
+Text:set_text  [только имя функции, text3d.md]
+      > text3d.set_text(id, text)
+Text:update_settings  [только имя функции, text3d.md]
+      > text3d.update_settings(id, preset)
+Transform:get_pos  [только имя функции, ecs.md]
+      > tsf:get_pos() -> vec3
+Transform:get_rot  [только имя функции, ecs.md]
+      > tsf:get_rot() -> mat4
+Transform:get_size  [только имя функции, ecs.md]
+      > tsf:get_size() -> vec3
+Transform:set_pos  [только имя функции, ecs.md]
+      > tsf:set_pos(pos:vec3)
+Transform:set_rot  [только имя функции, ecs.md]
+      > tsf:set_rot(rotation: mat4)
+Transform:set_size  [только имя функции, ecs.md]
+      > tsf:set_size(size: vec3)
+WeatherObj:get_config  [только имя функции, weather.md]
+      > | `weather_obj:get_config() -> table` | Текущая конфигурация. | оба |
+WeatherObj:get_type  [только имя функции, weather.md]
+      > | `weather_obj:get_type() -> string` | Тип (`"point"` или `"heightmap"`). | оба |
+WeatherObj:get_wid  [только имя функции, weather.md]
+      > | `weather_obj:get_wid() -> number` | ID эффекта. | оба |
+WeatherObj:is_active  [только имя функции, weather.md]
+      > | `weather_obj:is_active() -> boolean` | Активность. | оба |
+WeatherObj:move  [только имя функции, weather.md]
+      > | `weather_obj:move(x, z)` | Перемещение центра. | point |
+WeatherObj:remove  [только имя функции, weather.md]
+      > | `weather_obj:remove()` | Удаление эффекта. | оба |
+WeatherObj:set_duration  [только имя функции, weather.md]
+      > | `weather_obj:set_duration(duration)` | Изменение продолжительности. | point |
+WeatherObj:set_finish_handler  [только имя функции, weather.md]
+      > | `weather_obj:set_finish_handler(handler)` | Новый обработчик окончания. | point |
+WeatherObj:set_height_range  [только имя функции, weather.md]
+      > | `weather_obj:set_height_range(min, max)` | Диапазон высот. | heightmap |
+WeatherObj:set_heightmap_generator  [только имя функции, weather.md]
+      > | `weather_obj:set_heightmap_generator(gen)` | Установка генератора. | heightmap |
+WeatherObj:set_radius  [только имя функции, weather.md]
+      > | `weather_obj:set_radius(radius)` | Изменение радиуса. | point |
+api.messages.new  [только имя функции, messages.md]
+      > Сообщение можно сразу, в момент вызова new.
+api.replications.new  [только имя функции, replications.md]
+      > Репликатора можно сразу, в момент вызова new.
+player.username  [только имя функции, extra-classes.md]
+      > self.username = string  -- Имя игрока
+
+--- ПОДТВЕРЖДЕНО ПО ИМЕНИ (с фрагментом документации) ---
+API.utils.classes.module  [полное имя, module.md]
+      > local Module = API.utils.classes.module
+BlockWrap:get_pos  [полное имя, blockwraps.md]
+      > | `BlockWrap:get_pos() -> vec3` | Возвращает текущую позицию. |
+BlockWrap:get_texture  [полное имя, blockwraps.md]
+      > | `BlockWrap:get_texture() -> string` | Возвращает текущую текстуру. |
+BlockWrap:set_pos  [полное имя, blockwraps.md]
+      > | `BlockWrap:set_pos(position: vec3)` | Устанавливает новую позицию. |
+BlockWrap:set_texture  [полное имя, blockwraps.md]
+      > | `BlockWrap:set_texture(texture: string)` | Устанавливает новую текстуру. |
+BlockWrap:unwrap  [полное имя, blockwraps.md]
+      > | `BlockWrap:unwrap()` | Удаляет обёртку из мира. |
+Instance:get_elapsed  [полное имя, predicted-events.md]
+      > Instance:get_elapsed() -> number  -- Возвращает прошедшее время с начала в...
+Instance:get_progress  [полное имя, predicted-events.md]
+      > Instance:get_progress() -> number -- Возвращает прогресс
+Instance:interrupt  [полное имя, predicted-events.md]
+      > Instance:interrupt()              -- Прерывает действие
+Message.new  [полное имя, messages.md]
+      > Message.new(pack: string, event: string, schema: table) -> Message
+Message:echo  [полное имя, messages.md]
+      > Message:echo(data: table)
+Message:on  [полное имя, messages.md]
+      > Message:on(handler: function(client: Client, data: table))
+Message:selective_echo  [полное имя, messages.md]
+      > Message:selective_echo(data: table, selector: function(client): boolean)
+Message:send  [полное имя, messages.md]
+      > Message:send(data: table)
+Message:tell  [полное имя, messages.md]
+      > Message:tell(client: Client, data: table)
+PredictedEvent.new  [полное имя, predicted-events.md]
+      > PredictedEvent.new(
+PredictedEvent:start  [полное имя, predicted-events.md]
+      > ## PredictedEvent:start (клиент)
+Replication.new  [полное имя, replications.md]
+      > Replication.new(pack: string, event: string, schema: table) -> Replicator
+Replicator:create_listener  [полное имя, replications.md]
+      > Replicator:create_listener(id: int, initial_value: table) -> table
+Replicator:create_private_replica  [полное имя, replications.md]
+      > Replicator:create_private_replica(id: int, initial_value: table, client: Client) -> table
+Replicator:create_public_replica  [полное имя, replications.md]
+      > Replicator:create_public_replica(
+Replicator:get_replica  [полное имя, replications.md]
+      > Replicator:get_replica(id: int)
+Replicator:remove_replica  [полное имя, replications.md]
+      > Replicator:remove_replica(id: int)
+Rule:listen  [полное имя, rules.md]
+      > `set_value` вызывает всех подписчиков, зарегистрированных чере...
+Rule:unlisten  [полное имя, rules.md]
+      > Rule:unlisten(id: string)
+Session:init_table  [полное имя, db.md]
+      > Session:init_table({
+Speaker:pause  [полное имя, audio.md]
+      > Speaker:pause()
+Speaker:resume  [полное имя, audio.md]
+      > Speaker:resume()
+Speaker:set_volume  [полное имя, audio.md]
+      > Speaker:set_volume(0.25)
+Speaker:stop  [полное имя, audio.md]
+      > Speaker:stop()
+Text:get_pos  [полное имя, text3d.md]
+      > local pos = Text:get_pos()
+Text:set_pos  [полное имя, text3d.md]
+      > Text:set_pos({pos[1], pos[2]+1, pos[3]})
+api.accounts.by_identity.get_account  [полное имя, accounts.md]
+      > api.accounts.by_identity.get_account(identity: string) -> Account
+api.accounts.by_identity.get_client  [полное имя, accounts.md]
+      > api.accounts.by_identity.get_client(identity: string) -> Client
+api.accounts.get_client  [полное имя, accounts.md]
+      > api.accounts.get_client(account: Account) -> Client
+api.accounts.kick  [полное имя, accounts.md]
+      > api.accounts.kick(account: Account, reason: string, soft: boolean)
+api.accounts.roles.exists  [полное имя, accounts.md]
+      > api.accounts.roles.exists(role: table) -> boolean
+api.accounts.roles.get  [полное имя, accounts.md]
+      > api.accounts.roles.get(account: Account) -> table
+api.accounts.roles.get_permissions  [полное имя, accounts.md]
+      > api.accounts.roles.get_permissions(account: Account) -> table
+api.accounts.roles.is_higher  [полное имя, accounts.md]
+      > api.accounts.roles.is_higher(role1: table, role2: table) -> boolean
+api.bson.deserialize  [полное имя, bson.md]
+      > api.bson.deserialize(bytes: Bytearray) -> Table<Any>
+api.bson.serialize  [полное имя, bson.md]
+      > api.bson.serialize(tbl: Table<Any>) -> Bytearray
+api.console.create_state  [полное имя, console.md]
+      > api.console.create_state(name: string) -> State
+api.console.echo  [полное имя, console.md]
+      > api.console.echo(message: string)
+api.console.execute  [полное имя, console.md]
+      > api.console.execute(message: string, client: Client)
+api.console.set_command  [полное имя, console.md]
+      > api.console.set_command(
+api.console.set_state  [полное имя, console.md]
+      > api.console.set_state(state: State, client: Client)
+api.console.set_state_handler  [полное имя, console.md]
+      > api.console.set_state_handler(
+api.console.tell  [полное имя, console.md]
+      > api.console.tell(message: string, client: Client)
+api.db.db.exists  [полное имя, db.md]
+      > api.db.db.exists(pack: string) -> boolean
+api.db.db.login  [полное имя, db.md]
+      > api.db.db.login() -> Session | number
+api.db.db.register  [полное имя, db.md]
+      > api.db.db.register() -> nil | number
+api.db.items.Column  [полное имя, db.md]
+      > api.db.items.Column(column_type: string, [config: table]) -> Column
+api.entities.desync  [полное имя, entities.md]
+      > api.entities.desync(name: string)
+api.entities.eval.NotEquals  [без префикса api, entities.md]
+      > evaluate_deviation = entities.eval.NotEquals,
+api.entities.eval.VectorNotEquals  [без префикса api, entities.md]
+      > evaluate_deviation = entities.eval.VectorNotEquals
+api.entities.register  [без префикса api, entities.md]
+      > entities.register(entity_name, config, [spawn_handler])
+api.entities.server_to_client_uid  [полное имя, entities.md]
+      > api.entities.server_to_client_uid(uid: int)
+api.entities.set_handler  [полное имя, entities.md]
+      > api.entities.set_handler(
+api.entities.sync  [полное имя, entities.md]
+      > api.entities.sync(name: string)
+api.env.private.create  [полное имя, env.md]
+      > api.env.private.create(pack: string, env_name: string, client: Client) -> Proxy-table
+api.env.public.create  [полное имя, env.md]
+      > api.env.public.create(pack: string, env_name: string) -> Proxy-table
+api.events.echo  [полное имя, events.md]
+      > api.events.echo(pack: string, event: string, bytes: Bytearray)
+api.events.on  [полное имя, events.md]
+      > api.events.on(
+api.events.selective_echo  [полное имя, events.md]
+      > api.events.selective_echo(
+api.events.send  [полное имя, events.md]
+      > api.events.send(pack: string, event: string, bytes: bytearray)
+api.events.tell  [полное имя, events.md]
+      > api.events.tell(pack: string, event: string, client: Client, bytes: Bytearray)
+api.extensions.players.get_main_identity  [полное имя, players.md]
+      > api.extensions.players.get_main_identity() -> string
+api.extensions.players.get_main_username  [полное имя, players.md]
+      > api.extensions.players.get_main_username() -> string
+api.extensions.players.set_main_identity  [полное имя, players.md]
+      > api.extensions.players.set_main_identity(id: string)
+api.extensions.players.set_main_username  [полное имя, players.md]
+      > api.extensions.players.set_main_username(username: string)
+api.extensions.sandbox.players.get_all  [полное имя, sandbox.md]
+      > api.extensions.sandbox.players.get_all() -> table
+api.interceptors.packets.ClientMsg  [две последние части, interceptors.md]
+      > | `packets.ClientMsg` | Пакеты, **отправляемые клиентом** (приходят на ...
+api.interceptors.receive.add_generic_interceptor  [полное имя, interceptors.md]
+      > api.interceptors.receive.add_generic_interceptor(interceptor)
+api.interceptors.receive.add_interceptor  [полное имя, interceptors.md]
+      > api.interceptors.receive.add_interceptor(packet_type, interceptor)
+api.interceptors.send.add_generic_interceptor  [полное имя, interceptors.md]
+      > api.interceptors.send.add_generic_interceptor(interceptor)
+api.interceptors.send.add_interceptor  [полное имя, interceptors.md]
+      > api.interceptors.send.add_interceptor(packet_type, interceptor)
+api.inventory_data.deserialize  [полное имя, inventory-data.md]
+      > api.inventory_data.deserialize(bytes: Bytearray) -> table
+api.inventory_data.serialize  [полное имя, inventory-data.md]
+      > api.inventory_data.serialize(inv: table) -> Bytearray
+api.register_as_shell  [полное имя, index.md]
+      > api.register_as_shell(contract)
+api.rpc.emitter.create_echo  [полное имя, rpc.md]
+      > api.rpc.emitter.create_echo(pack: string, event: string) -> function(...)
+api.rpc.emitter.create_send  [полное имя, rpc.md]
+      > api.rpc.emitter.create_send(pack: string, event: string) -> function(...)
+api.rpc.emitter.create_tell  [полное имя, rpc.md]
+      > api.rpc.emitter.create_tell(pack: string, event: string) -> function(client: Client, ...)
+api.rpc.handler.on  [полное имя, rpc.md]
+      > api.rpc.handler.on(pack: string, event: string, handler: function(client, ...))
+api.rules.define  [полное имя, rules.md]
+      > > `api.rules.define` должен вызываться в **shared**-коде — том, что выпол...
+api.rules.define_if_absent  [полное имя, rules.md]
+      > > Повторный `api.rules.define` с уже занятым именем кидает ошибку. Е...
+api.rules.get_rule  [полное имя, rules.md]
+      > api.rules.get_rule(name: string) -> Rule | nil
+api.rules.get_value  [полное имя, rules.md]
+      > api.rules.get_value(rule: Rule) -> boolean
+api.rules.is_defined  [полное имя, rules.md]
+      > api.rules.is_defined(name: string) -> boolean
+api.rules.players.get_all_values  [полное имя, rules.md]
+      > api.rules.players.get_all_values(player: Player) -> { [name: string] = value }
+api.rules.players.get_value  [полное имя, rules.md]
+      > api.rules.players.get_value(player: Player, rule: Rule) -> boolean
+api.rules.players.set_value  [полное имя, rules.md]
+      > api.rules.players.set_value(player: Player, rule: Rule, value: boolean)
+api.rules.worlds.get_value  [полное имя, rules.md]
+      > api.rules.worlds.get_value(world: World, rule: Rule) -> boolean
+api.rules.worlds.set_value  [полное имя, rules.md]
+      > api.rules.worlds.set_value(world: World, rule: Rule, value: boolean)
+api.sandbox.inventories.close  [полное имя, sandbox.md]
+      > api.sandbox.inventories.close(player: Player)
+api.sandbox.inventories.create_controller  [полное имя, sandbox.md]
+      > api.sandbox.inventories.create_controller(source: string | table) -> InventoryController
+api.sandbox.inventories.echo_close  [полное имя, sandbox.md]
+      > api.sandbox.inventories.echo_close(invid: int)
+api.sandbox.inventories.get_second_inventory  [полное имя, sandbox.md]
+      > api.sandbox.inventories.get_second_inventory(player: Player) -> int
+api.sandbox.inventories.open  [полное имя, sandbox.md]
+      > api.sandbox.inventories.open(
+api.sandbox.inventories.open_block  [полное имя, sandbox.md]
+      > api.sandbox.inventories.open_block(player: Player, pos: vec3)
+api.sandbox.inventories.set_controller  [полное имя, sandbox.md]
+      > api.sandbox.inventories.set_controller(ident: int | string, controller: InventoryController)
+api.sandbox.inventories.set_invid_controller  [полное имя, sandbox.md]
+      > api.sandbox.inventories.set_invid_controller(invid: int, controller: InventoryController)
+api.sandbox.players.by_identity.is_online  [полное имя, sandbox.md]
+      > api.sandbox.players.by_identity.is_online(identity: string) -> boolean
+api.sandbox.players.by_username.is_online  [полное имя, sandbox.md]
+      > api.sandbox.players.by_username.is_online(username: string) -> boolean
+api.sandbox.players.chunk_is_loaded  [полное имя, sandbox.md]
+      > api.sandbox.players.chunk_is_loaded(player: Player, x: int, z: int) -> boolean
+api.sandbox.players.get_all  [полное имя, sandbox.md]
+      > api.sandbox.players.get_all() -> table
+api.sandbox.players.get_by_pid  [полное имя, sandbox.md]
+      > api.sandbox.players.get_by_pid(pid: number) -> Player
+api.sandbox.players.get_client  [полное имя, sandbox.md]
+      > api.sandbox.players.get_client(player: Player) -> Client
+api.sandbox.players.get_in_radius  [полное имя, sandbox.md]
+      > api.sandbox.players.get_in_radius(pos: {x, y, z}, radius: number) -> table
+api.sandbox.players.get_player  [полное имя, sandbox.md]
+      > api.sandbox.players.get_player(account: Account) -> Player
+api.sandbox.players.get_world  [полное имя, sandbox.md]
+      > api.sandbox.players.get_world(player: Player) -> World
+api.sandbox.players.is_username_available  [полное имя, sandbox.md]
+      > api.sandbox.players.is_username_available(username: string, [identity: string]) -> boolean
+api.tasks.add_task  [полное имя, tasks.md]
+      > api.tasks.add_task(task: function)
+audio.count_speakers  [полное имя, audio.md]
+      > audio.count_speakers() -> number
+audio.count_streams  [полное имя, audio.md]
+      > audio.count_streams() -> number
+audio.play_sound  [полное имя, audio.md]
+      > audio.play_sound(
+audio.play_sound_2d  [полное имя, audio.md]
+      > audio.play_sound_2d(
+audio.play_stream  [полное имя, audio.md]
+      > audio.play_stream(
+audio.play_stream_2d  [полное имя, audio.md]
+      > audio.play_stream_2d(
+audio.register_duration  [полное имя, audio.md]
+      > audio.register_duration(name: string, duration: number)
+block.caption  [полное имя, libblock.md]
+      > block.caption(blockid: int) -> str
+block.compose_state  [полное имя, libblock.md]
+      > block.compose_state(state: {rotation: int, segment: int, userbits: int}) -> int
+block.decompose_state  [полное имя, libblock.md]
+      > block.decompose_state(state: int) -> {int, int, int}
+block.defs_count  [полное имя, libblock.md]
+      > block.defs_count() -> int
+block.destruct  [полное имя, libblock.md]
+      > block.destruct(x: int, y: int, z: int, playerid: int)
+block.get  [полное имя, libblock.md]
+      > block.get(x: int, y: int, z: int) -> int
+block.get_X  [полное имя, libblock.md]
+      > block.get_X(x: int, y: int, z: int) -> int, int, int
+block.get_Y  [полное имя, libblock.md]
+      > block.get_Y(x: int, y: int, z: int) -> int, int, int
+block.get_Z  [полное имя, libblock.md]
+      > block.get_Z(x: int, y: int, z: int) -> int, int, int
+block.get_field  [полное имя, libblock.md]
+      > block.get_field(
+block.get_hitbox  [полное имя, libblock.md]
+      > block.get_hitbox(id: int, rotation_index: int, [optional] hitbox_index: int = 0) -> {vec3, vec3}
+block.get_model  [полное имя, libblock.md]
+      > block.get_model(id: int, [optional] variant_index: int = 0) -> str
+block.get_picking_item  [полное имя, libblock.md]
+      > block.get_picking_item(id: int) -> int
+block.get_rotation  [полное имя, libblock.md]
+      > block.get_rotation(x: int, y: int, z: int) -> int
+block.get_size  [полное имя, libblock.md]
+      > block.get_size(id: int) -> int, int, int
+block.get_states  [полное имя, libblock.md]
+      > block.get_states(x: int, y: int, z: int) -> int
+block.get_textures  [полное имя, libblock.md]
+      > block.get_textures(id: int, [optional] variant_index: int = 0) -> string table
+block.get_user_bits  [полное имя, libblock.md]
+      > block.get_user_bits(x: int, y: int, z: int, offset: int, bits: int) -> int
+block.get_variant  [полное имя, libblock.md]
+      > block.get_variant(x: int, y: int, z: int) -> int
+block.has_tag  [полное имя, libblock.md]
+      > block.has_tag(id: int, tag: str) -> bool
+block.index  [полное имя, libblock.md]
+      > block.index(name: str) -> int
+block.is_extended  [полное имя, libblock.md]
+      > block.is_extended(id: int) -> bool
+block.is_replaceable_at  [полное имя, libblock.md]
+      > block.is_replaceable_at(x: int, y: int, z: int) -> bool
+block.is_segment  [полное имя, libblock.md]
+      > block.is_segment(x: int, y: int, z: int) -> bool
+block.is_solid_at  [полное имя, libblock.md]
+      > block.is_solid_at(x: int, y: int, z: int) -> bool
+block.material  [полное имя, libblock.md]
+      > block.material(blockid: int) -> str
+block.model_name  [полное имя, libblock.md]
+      > block.model_name(id: int, [optional] variant_index: int = 0) -> str
+block.name  [полное имя, libblock.md]
+      > block.name(blockid: int) -> str
+block.place  [полное имя, libblock.md]
+      > block.place(x: int, y: int, z: int, id: int, states: int, [optional] playerid: int)
+block.raycast  [полное имя, libblock.md]
+      > block.raycast(start: vec3, dir: vec3, max_distance: number, [optional] dest: table,
+block.seek_origin  [полное имя, libblock.md]
+      > block.seek_origin(x: int, y: int, z: int) -> int, int, int
+block.set  [полное имя, libblock.md]
+      > block.set(x: int, y: int, z: int, id: int, states: int, noupdate: boolean=false)
+block.set_field  [полное имя, libblock.md]
+      > block.set_field(
+block.set_rotation  [полное имя, libblock.md]
+      > block.set_rotation(x: int, y: int, z: int, rotation: int)
+block.set_user_bits  [полное имя, libblock.md]
+      > block.set_user_bits(x: int, y: int, z: int, offset: int, bits: int, value: int) -> int
+block.set_variant  [полное имя, libblock.md]
+      > block.set_variant(x: int, y: int, z: int, index: int)
+cameras.get  [полное имя, libcameras.md]
+      > cameras.get(name: str) -> table
+entities.def_hitbox  [полное имя, libentities.md]
+      > entities.def_hitbox(id: int) -> vec3
+entities.def_index  [полное имя, libentities.md]
+      > entities.def_index(name: str) -> int
+entities.def_name  [полное имя, libentities.md]
+      > entities.def_name(id: int) -> str
+entities.def_solid  [полное имя, libentities.md]
+      > entities.def_solid(id: int) -> boolean
+entities.defs_count  [полное имя, libentities.md]
+      > entities.defs_count() -> int
+entities.eval.Always  [полное имя, entities.md]
+      > entities.eval.Always
+entities.eval.Never  [полное имя, entities.md]
+      > entities.eval.Never
+entities.eval.NotEquals  [полное имя, entities.md]
+      > evaluate_deviation = entities.eval.NotEquals,
+entities.eval.VectorLength  [полное имя, entities.md]
+      > entities.eval.VectorLength
+entities.eval.VectorNotEquals  [полное имя, entities.md]
+      > evaluate_deviation = entities.eval.VectorNotEquals
+entities.exists  [полное имя, libentities.md]
+      > entities.exists(uid: int) -> bool
+entities.extend  [полное имя, entities.md]
+      > entities.extend(entity_name, config, [spawn_handler])
+entities.get  [полное имя, libentities.md]
+      > entities.get(uid: int) -> table
+entities.get_all  [полное имя, libentities.md]
+      > entities.get_all() -> table
+entities.get_all_in_box  [полное имя, libentities.md]
+      > entities.get_all_in_box(pos: vec3, size: vec3) -> array<int>
+entities.get_all_in_radius  [полное имя, libentities.md]
+      > entities.get_all_in_radius(center: vec3, radius: number) -> array<int>
+entities.get_def  [полное имя, libentities.md]
+      > entities.get_def(uid: int) -> int
+entities.raycast  [полное имя, libentities.md]
+      > entities.raycast(start: vec3, dir: vec3, max_distance: number, ignore: int, [optional] destination: table,
+entities.register  [полное имя, entities.md]
+      > entities.register(entity_name, config, [spawn_handler])
+entities.spawn  [полное имя, libentities.md]
+      > entities.spawn(name: str, pos: vec3, [optional] args: table) -> table
+events.emit  [полное имя, events.md]
+      > events.emit(code: str, args...) -> bool
+events.on  [полное имя, events.md]
+      > events.on(code: str, handler: function)
+events.remove_by_prefix  [полное имя, events.md]
+      > events.remove_by_prefix(packid: str)
+events.reset  [полное имя, events.md]
+      > events.reset(code: str, [optional] handler: function)
+file.create_memory_device  [полное имя, libfile.md]
+      > file.create_memory_device() --> str
+file.create_zip  [полное имя, libfile.md]
+      > file.create_zip(directory: str, output_file: str) --> str
+file.exists  [полное имя, libfile.md]
+      > file.exists(path: str) -> bool
+file.ext  [полное имя, libfile.md]
+      > file.ext(path: str) --> str
+file.find  [полное имя, libfile.md]
+      > file.find(path: str) -> str
+file.is_writeable  [полное имя, libfile.md]
+      > file.is_writeable(path: str) -> bool
+file.isdir  [полное имя, libfile.md]
+      > file.isdir(path: str) -> bool
+file.isfile  [полное имя, libfile.md]
+      > file.isfile(path: str) -> bool
+file.join  [полное имя, libfile.md]
+      > file.join(directory: str, path: str) --> str
+file.length  [полное имя, libfile.md]
+      > file.length(path: str) -> int
+file.list  [полное имя, libfile.md]
+      > file.list(path: str) -> array of strings
+file.list_all_res  [полное имя, libfile.md]
+      > file.list_all_res(path: str) -> array of strings
+file.mkdir  [полное имя, libfile.md]
+      > file.mkdir(path: str) -> bool
+file.mkdirs  [полное имя, libfile.md]
+      > file.mkdirs(path: str) -> bool
+file.mount  [полное имя, libfile.md]
+      > file.mount(path: str) --> str
+file.name  [полное имя, libfile.md]
+      > file.name(path: str) --> str
+file.parent  [полное имя, libfile.md]
+      > file.parent(path: str) --> str
+file.path  [полное имя, libfile.md]
+      > file.path(path: str) --> str
+file.prefix  [полное имя, libfile.md]
+      > file.prefix(path: str) --> str
+file.read  [полное имя, libfile.md]
+      > file.read(path: str) -> str
+file.read_bytes  [полное имя, libfile.md]
+      > file.read_bytes(path: str, [optional] usetable) -> array of integers
+file.read_combined_list  [полное имя, libfile.md]
+      > file.read_combined_list(path: str) -> array
+file.read_combined_object  [полное имя, libfile.md]
+      > file.read_combined_object(path: str) -> array
+file.remove  [полное имя, libfile.md]
+      > file.remove(path: str) -> bool
+file.remove_ext  [полное имя, libfile.md]
+      > file.remove_ext(path: string) -> string
+file.remove_tree  [полное имя, libfile.md]
+      > file.remove_tree(path: str) -> int
+file.resolve  [полное имя, libfile.md]
+      > file.resolve(path: str) -> str
+file.stem  [полное имя, libfile.md]
+      > file.stem(path: str) --> str
+file.unmount  [полное имя, libfile.md]
+      > file.unmount(entry_point: str) --> str
+file.write  [полное имя, libfile.md]
+      > file.write(path: str, text: str) -> nil
+file.write_bytes  [полное имя, libfile.md]
+      > file.write_bytes(path: str, data: array of integers)
+gfx.blockwraps  [полное имя, libgfx-blockwraps.md]
+      > # Library *gfx.blockwraps*
+gfx.blockwraps.set_faces  [полное имя, libgfx-blockwraps.md]
+      > gfx.blockwraps.set_faces(
+gfx.blockwraps.set_pos  [полное имя, libgfx-blockwraps.md]
+      > gfx.blockwraps.set_pos(id: int, position: vec3)
+gfx.blockwraps.set_texture  [полное имя, libgfx-blockwraps.md]
+      > gfx.blockwraps.set_texture(id: int, texture: str)
+gfx.blockwraps.set_tints  [полное имя, libgfx-blockwraps.md]
+      > gfx.blockwraps.set_tints(
+gfx.blockwraps.unwrap  [полное имя, libgfx-blockwraps.md]
+      > gfx.blockwraps.unwrap(id: int)
+gfx.blockwraps.wrap  [полное имя, libgfx-blockwraps.md]
+      > gfx.blockwraps.wrap(
+gui.alert  [полное имя, libgui.md]
+      > gui.alert(
+gui.ask  [полное имя, libgui.md]
+      > gui.ask(
+gui.clear_markup  [полное имя, libgui.md]
+      > gui.clear_markup(
+gui.close_menu  [полное имя, libgui.md]
+      > gui.close_menu()
+gui.confirm  [полное имя, libgui.md]
+      > gui.confirm(
+gui.create_frame  [полное имя, libgui.md]
+      > gui.create_frame(
+gui.escape_markup  [полное имя, libgui.md]
+      > gui.escape_markup(
+gui.get_active_frame  [полное имя, libgui.md]
+      > gui.get_active_frame() -> str
+gui.get_env  [полное имя, libgui.md]
+      > gui.get_env(document: str) -> table
+gui.get_locales_info  [полное имя, libgui.md]
+      > gui.get_locales_info() -> table of tables {
+gui.get_viewport  [полное имя, libgui.md]
+      > gui.get_viewport() -> {int, int}
+gui.load_document  [полное имя, libgui.md]
+      > gui.load_document(
+gui.process_template  [полное имя, libgui.md]
+      > gui.process_template(
+gui.screenshot  [полное имя, libgui.md]
+      > gui.screenshot(
+gui.set_active_frame  [полное имя, libgui.md]
+      > gui.set_active_frame(
+gui.show_message  [полное имя, libgui.md]
+      > gui.show_message(
+gui.str  [полное имя, libgui.md]
+      > gui.str(text: str, context: str) -> str
+gui.template  [полное имя, libgui.md]
+      > gui.template(
+hud.close  [полное имя, libhud.md]
+      > hud.close(layoutid: str)
+hud.close_inventory  [полное имя, libhud.md]
+      > hud.close_inventory()
+hud.get_block_inventory  [полное имя, libhud.md]
+      > hud.get_block_inventory() -> int
+hud.get_exchange_inventory  [полное имя, libhud.md]
+      > hud.get_exchange_inventory() -> int
+hud.get_player  [полное имя, libhud.md]
+      > hud.get_player() -> int
+hud.get_second_inventory  [полное имя, libhud.md]
+      > hud.get_second_inventory() -> int
+hud.is_inventory_open  [полное имя, libhud.md]
+      > hud.is_inventory_open() -> bool
+hud.is_open  [полное имя, libhud.md]
+      > hud.is_open(
+hud.is_paused  [полное имя, libhud.md]
+      > hud.is_paused() -> bool
+hud.is_player_inventory_open  [полное имя, libhud.md]
+      > hud.is_player_inventory_open() -> boolean
+hud.open  [полное имя, libhud.md]
+      > hud.open(
+hud.open_block  [полное имя, libhud.md]
+      > hud.open_block(x: int, y: int, z: int) -> int, str
+hud.open_inventory  [полное имя, libhud.md]
+      > hud.open_inventory()
+hud.open_permanent  [полное имя, libhud.md]
+      > hud.open_permanent(layoutid: str)
+hud.pause  [полное имя, libhud.md]
+      > hud.pause()
+hud.resume  [полное имя, libhud.md]
+      > hud.resume()
+hud.set_allow_pause  [полное имя, libhud.md]
+      > hud.set_allow_pause(flag: bool)
+hud.show_overlay  [полное имя, libhud.md]
+      > hud.show_overlay(layoutid: str, playerinv: bool, [optional] args: table)
+input.add_callback  [полное имя, libinput.md]
+      > input.add_callback(
+input.get_binding_text  [полное имя, libinput.md]
+      > input.get_binding_text(bindname: str) --> str
+input.get_bindings  [полное имя, libinput.md]
+      > input.get_bindings() --> strings array
+input.get_mouse_delta  [полное имя, libinput.md]
+      > input.get_mouse_delta() --> {int, int}
+input.get_mouse_pos  [полное имя, libinput.md]
+      > input.get_mouse_pos() --> {int, int}
+input.get_mouse_scroll  [полное имя, libinput.md]
+      > input.get_mouse_scroll() --> int
+input.is_active  [полное имя, libinput.md]
+      > input.is_active(bindname: str) --> bool
+input.is_pressed  [полное имя, libinput.md]
+      > input.is_pressed(code: str) --> bool
+input.keycode  [полное имя, libinput.md]
+      > input.keycode(keyname: str) --> int
+input.mousecode  [полное имя, libinput.md]
+      > input.mousecode(mousename: str) --> int
+input.set_enabled  [полное имя, libinput.md]
+      > input.set_enabled(bindname: str, flag: bool)
+pack.assemble  [полное имя, libpack.md]
+      > pack.assemble(packids: table) -> table
+pack.data_file  [полное имя, libpack.md]
+      > pack.data_file(packid: str, filename: str) -> str
+pack.get_available  [полное имя, libpack.md]
+      > pack.get_available() -> strings array
+pack.get_base_packs  [полное имя, libpack.md]
+      > pack.get_base_packs() -> strings array
+pack.get_folder  [полное имя, libpack.md]
+      > pack.get_folder(packid: str) -> str
+pack.get_info  [полное имя, libpack.md]
+      > pack.get_info(packid: str) -> {
+pack.get_installed  [полное имя, libpack.md]
+      > pack.get_installed() -> strings array
+pack.is_installed  [полное имя, libpack.md]
+      > pack.is_installed(packid: str) -> bool
+pack.request_writeable  [полное имя, libpack.md]
+      > pack.request_writeable(packid: str, callback: function(str))
+pack.shared_file  [полное имя, libpack.md]
+      > pack.shared_file(packid: str, filename: str) -> str
+particles.emit  [полное имя, particles.md]
+      > particles.emit(
+particles.get  [полное имя, particles.md]
+      > particles.get(pid: int) -> ParticleObj | nil
+player.create  [полное имя, libplayer.md]
+      > player.create(name: str) -> int
+player.delete  [полное имя, libplayer.md]
+      > player.delete(id: int)
+player.get_all  [полное имя, libplayer.md]
+      > player.get_all() -> table<int>
+player.get_all_in_radius  [полное имя, libplayer.md]
+      > player.get_all_in_radius(center: vec3, radius: number) -> table<int>
+player.get_camera  [полное имя, libplayer.md]
+      > player.get_camera(playerid: int) -> int
+player.get_dir  [полное имя, libplayer.md]
+      > player.get_dir(playerid: int) -> vec3
+player.get_entity  [полное имя, libplayer.md]
+      > player.get_entity(playerid: int) -> int
+player.get_interaction_distance  [полное имя, libplayer.md]
+      > player.get_interaction_distance(playerid: int) -> float
+player.get_inventory  [полное имя, libplayer.md]
+      > player.get_inventory(playerid: int) -> int, int
+player.get_name  [полное имя, libplayer.md]
+      > player.get_name(playerid: int) -> str
+player.get_nearest  [полное имя, libplayer.md]
+      > player.get_nearest(position: vec3) -> int
+player.get_pos  [полное имя, libplayer.md]
+      > player.get_pos(playerid: int) -> number, number, number
+player.get_rot  [полное имя, libplayer.md]
+      > player.get_rot(playerid: int, interpolated: bool) -> number, number, number
+player.get_selected_block  [полное имя, libplayer.md]
+      > player.get_selected_block(playerid: int) -> x,y,z
+player.get_selected_entity  [полное имя, libplayer.md]
+      > player.get_selected_entity(playerid: int) -> int
+player.get_spawnpoint  [полное имя, libplayer.md]
+      > player.get_spawnpoint(playerid: int) -> number, number, number
+player.get_vel  [полное имя, libplayer.md]
+      > player.get_vel(playerid: int) -> number, number, number
+player.is_flight  [полное имя, libplayer.md]
+      > player.is_flight(playerid: int) -> bool
+player.is_infinite_items  [полное имя, libplayer.md]
+      > player.is_infinite_items(playerid: int) -> bool
+player.is_instant_destruction  [полное имя, libplayer.md]
+      > player.is_instant_destruction(playerid: int) -> bool
+player.is_loading_chunks  [полное имя, libplayer.md]
+      > player.is_loading_chunks(playerid: int) -> bool
+player.is_noclip  [полное имя, libplayer.md]
+      > player.is_noclip(playerid: int) -> bool
+player.is_suspended  [полное имя, libplayer.md]
+      > player.is_suspended(pid: int) -> bool
+player.set_camera  [полное имя, libplayer.md]
+      > player.set_camera(playerid: int, camera_index: int)
+player.set_flight  [полное имя, libplayer.md]
+      > player.set_flight(playerid: int, bool)
+player.set_infinite_items  [полное имя, libplayer.md]
+      > player.set_infinite_items(playerid: int, bool)
+player.set_instant_destruction  [полное имя, libplayer.md]
+      > player.set_instant_destruction(playerid: int, bool)
+player.set_interaction_distance  [полное имя, libplayer.md]
+      > player.set_interaction_distance(playerid: int, distance: float)
+player.set_loading_chunks  [полное имя, libplayer.md]
+      > player.set_loading_chunks(playerid: int, bool)
+player.set_name  [полное имя, libplayer.md]
+      > player.set_name(playerid: int, name: str)
+player.set_noclip  [полное имя, libplayer.md]
+      > player.set_noclip(playerid: int, bool)
+player.set_pos  [полное имя, libplayer.md]
+      > player.set_pos(playerid: int, x: number, y: number, z: number)
+player.set_rot  [полное имя, libplayer.md]
+      > player.set_rot(playerid: int, x: number, y: number, z: number)
+player.set_selected_slot  [полное имя, libplayer.md]
+      > player.set_selected_slot(playerid: int, slotid: int)
+player.set_spawnpoint  [полное имя, libplayer.md]
+      > player.set_spawnpoint(playerid: int, x: number, y: number, z: number)
+player.set_suspended  [полное имя, libplayer.md]
+      > player.set_suspended(pid: int, suspended: bool)
+player.set_vel  [полное имя, libplayer.md]
+      > player.set_vel(playerid: int, x: number, y: number, z: number)
+protocol.echo  [полное имя, protocol.md]
+      > protocol.echo(packet_type, data)
+protocol.tell  [полное имя, protocol.md]
+      > protocol.tell(client, packet_type, data)
+rules.create  [полное имя, librules.md]
+      > rules.create(
+rules.get  [полное имя, librules.md]
+      > rules.get(name: str) -> bool | nil
+rules.listen  [полное имя, librules.md]
+      > rules.listen(
+rules.reset  [полное имя, librules.md]
+      > > Rules that have not been created can be used, but resetting via rules.reset will result in setting the va...
+rules.set  [полное имя, librules.md]
+      > rules.set(name: str, value: bool)
+rules.unlisten  [полное имя, librules.md]
+      > rules.unlisten(name: str, id: int)
+session.get  [полное имя, libsession.md]
+      > session.get(name: str) -> table
+session.has  [полное имя, libsession.md]
+      > session.has(name: str) -> boolean
+session.reset  [полное имя, libsession.md]
+      > session.reset(name: str)
+text3d.get_axis_x  [полное имя, text3d.md]
+      > text3d.get_axis_x(id)
+text3d.get_axis_y  [полное имя, text3d.md]
+      > text3d.get_axis_y(id)
+text3d.get_obj  [полное имя, text3d.md]
+      > text3d.get_obj(id) -> TextObject | nil
+text3d.get_pos  [полное имя, text3d.md]
+      > text3d.get_pos(id)
+text3d.get_text  [полное имя, text3d.md]
+      > text3d.get_text(id)
+text3d.hide  [полное имя, text3d.md]
+      > text3d.hide(id)
+text3d.set_axis_x  [полное имя, text3d.md]
+      > text3d.set_axis_x(id, axis)
+text3d.set_axis_y  [полное имя, text3d.md]
+      > text3d.set_axis_y(id, axis)
+text3d.set_pos  [полное имя, text3d.md]
+      > text3d.set_pos(id, position)
+text3d.set_rotation  [полное имя, text3d.md]
+      > text3d.set_rotation(id, rotation)
+text3d.set_text  [полное имя, text3d.md]
+      > text3d.set_text(id, text)
+text3d.show  [полное имя, text3d.md]
+      > text3d.show(position: vec3, text: string, preset: table, [extension: table]) -> id, TextObject
+text3d.update_settings  [полное имя, text3d.md]
+      > text3d.update_settings(id, preset)
+time.delta  [полное имя, libtime.md]
+      > time.delta() -> number
+time.local_time  [полное имя, libtime.md]
+      > time.local_time() -> int
+time.precise_time  [полное имя, libtime.md]
+      > time.precise_time() -> number
+time.precise_utc_time  [полное имя, libtime.md]
+      > time.precise_utc_time() -> number
+time.uptime  [полное имя, libtime.md]
+      > time.uptime() -> number
+time.utc_offset  [полное имя, libtime.md]
+      > time.utc_offset() -> int
+time.utc_time  [полное имя, libtime.md]
+      > time.utc_time() -> int
+weather.create  [полное имя, weather.md]
+      > weather.create(region: table, conf: table) -> WeatherObj
+weather.get  [полное имя, weather.md]
+      > weather.get(wid: number) -> WeatherObj | nil
+weather.get_by_pos  [полное имя, weather.md]
+      > weather.get_by_pos(x: number, z: number) -> WeatherObj | nil
+world.count_chunks  [полное имя, libworld.md]
+      > world.count_chunks() -> int
+world.exists  [полное имя, libworld.md]
+      > world.exists(name: str) -> bool
+world.get_chunk_data  [полное имя, libworld.md]
+      > world.get_chunk_data(x: int, z: int) -> Bytearray or nil
+world.get_day_time  [полное имя, libworld.md]
+      > world.get_day_time() -> number
+world.get_day_time_speed  [полное имя, libworld.md]
+      > world.get_day_time_speed() -> number
+world.get_generator  [полное имя, libworld.md]
+      > world.get_generator() -> str
+world.get_list  [полное имя, libworld.md]
+      > world.get_list() -> tables array {
+world.get_seed  [полное имя, libworld.md]
+      > world.get_seed() -> int
+world.get_total_time  [полное имя, libworld.md]
+      > world.get_total_time() -> number
+world.is_day  [полное имя, libworld.md]
+      > world.is_day() -> bool
+world.is_night  [полное имя, libworld.md]
+      > world.is_night() -> bool
+world.is_open  [полное имя, libworld.md]
+      > world.is_open() -> bool
+world.raycast  [полное имя, libworld.md]
+      > world.raycast(
+world.save_chunk_data  [полное имя, libworld.md]
+      > world.save_chunk_data(
+world.set_chunk_data  [полное имя, libworld.md]
+      > world.set_chunk_data(
+world.set_day_time  [полное имя, libworld.md]
+      > world.set_day_time(time: number)
+world.set_day_time_speed  [полное имя, libworld.md]
+      > world.set_day_time_speed(value: number)
+wraps.set_pos  [полное имя, blockwraps.md]
+      > wraps.set_pos(id: number, position: vec3)
+wraps.set_texture  [полное имя, blockwraps.md]
+      > wraps.set_texture(id: number, texture: string)
+wraps.unwrap  [полное имя, blockwraps.md]
+      > wraps.unwrap(id: number)
+wraps.wrap  [полное имя, blockwraps.md]
+      > wraps.wrap(position: vec3, texture: string) -> id, BlockWrap
+
+=== Код в vtt/ ===
+Файлов Lua: 19
+
+--- Вызовы, которых нет в белом списке ---
+нет
+
+--- Подсказка ---
+Имена вида session.* и rules.* в vtt/ могут быть ложными срабатываниями: это ваши модули,
+а не библиотеки движка. Из-за такого совпадения имён модули лучше переименовать.
+
+--- Комментарии '-- docs:' с неверными путями ---
+нет
+
+=== Покрытие документации ===
+Файлов документации: 125, не использованы ни одной записью: 52
+  D:\VoxelVTT\docs\api-notes.md
+  D:\VoxelVTT\docs\content-packs.md
+  D:\VoxelVTT\docs\engine\3d-text.md
+  D:\VoxelVTT\docs\engine\assets-preload.md
+  D:\VoxelVTT\docs\engine\block-models.md
+  D:\VoxelVTT\docs\engine\block-properties.md
+  D:\VoxelVTT\docs\engine\content-packs.md
+  D:\VoxelVTT\docs\engine\engine-use-recommendations.md
+  D:\VoxelVTT\docs\engine\entity-properties.md
+  D:\VoxelVTT\docs\engine\item-properties.md
+  D:\VoxelVTT\docs\engine\main-page.md
+  D:\VoxelVTT\docs\engine\projects.md
+  D:\VoxelVTT\docs\engine\rigging.md
+  D:\VoxelVTT\docs\engine\scripting.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libapp.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libassets.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libbase64.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libbyteutil.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libcrypto.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libctypes.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libgfx-posteffects.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libgfx-skeletons.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libgfx-weather.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libinventory.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libitem.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libmat4.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libnetwork.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libpathfinding.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libquat.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\librandom.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libutf8.md
+  D:\VoxelVTT\docs\engine\scripting\builtins\libvecn.md
+  D:\VoxelVTT\docs\engine\scripting\extensions.md
+  D:\VoxelVTT\docs\engine\scripting\filesystem.md
+  D:\VoxelVTT\docs\engine\scripting\modules\core_bit_converter.md
+  D:\VoxelVTT\docs\engine\scripting\modules\core_data_buffer.md
+  D:\VoxelVTT\docs\engine\scripting\modules\core_vector2_vector3.md
+  D:\VoxelVTT\docs\engine\scripting\ui.md
+  D:\VoxelVTT\docs\engine\scripting\user-input.md
+  D:\VoxelVTT\docs\engine\text-styles.md
+  D:\VoxelVTT\docs\engine\vca.md
+  D:\VoxelVTT\docs\engine\vcm.md
+  D:\VoxelVTT\docs\engine\world-generator.md
+  D:\VoxelVTT\docs\engine\xml-ui-layouts.md
+  D:\VoxelVTT\docs\neutron-api-notes.md
+  D:\VoxelVTT\docs\neutron\api\language-server.md
+  D:\VoxelVTT\docs\neutron\api\libraries\std-events.md
+  D:\VoxelVTT\docs\neutron\api\utils\about.md
+  D:\VoxelVTT\docs\neutron\core\creating-server.md
+  D:\VoxelVTT\docs\neutron\core\server-terminal.md
+  D:\VoxelVTT\docs\wisplib\WispLib_API_Manual.md
+  D:\VoxelVTT\docs\wisplib\WispLib_�㪮����⢮_ࠧࠡ��稪�.md
+
+Итог: критичных проблем не найдено

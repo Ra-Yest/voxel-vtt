@@ -1,0 +1,8 @@
+{
+    "id": "vtt",
+    "title": "Voxel VTT",
+    "version": "0.1.0",
+    "creator": "VoxelVTT",
+    "description": "3D virtual tabletop environment for role-playing games on VoxelCore",
+    "dependencies": []
+}

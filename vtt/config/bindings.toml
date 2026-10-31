@@ -1,0 +1,8 @@
+vtt.camera_toggle = "key:v"
+vtt.grid_toggle = "key:g"
+vtt.tactical_click = "mouse:left"
+vtt.cam_forward = "key:w"
+vtt.cam_back = "key:s"
+vtt.cam_left = "key:a"
+vtt.cam_right = "key:d"
+
