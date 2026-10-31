@@ -141,7 +141,7 @@ T.test("block_interceptor: register_command регистрирует block_set �
         table.insert(logged_lines, line)
     end
 
-    local mock_client = { account = { identity = "admin", role = "master" } }
+    local mock_client = { account = { identity = "admin", role = "master", is_logged = true } }
     registered_handler({ x = "12", y = "64", z = "-5", id = "3" }, mock_client)
 
     T.truthy(world_called_with ~= nil, "world.set_block вызван")

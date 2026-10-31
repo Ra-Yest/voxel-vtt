@@ -365,7 +365,7 @@ T.test("block_interceptor: регистрирует синхронизацию �
     for scheme, cmd in pairs(registered_commands) do
         if scheme:find("token_spawn") then spawn_cmd = cmd; break end
     end
-    spawn_cmd.handler({ cx = "3", cz = "4", id = "cmd_token" }, { account = { identity = "gm_admin", role = "master" } })
+    spawn_cmd.handler({ cx = "3", cz = "4", id = "cmd_token" }, { account = { identity = "gm_admin", role = "master", is_logged = true } })
     local t_cmd = tokens.get("cmd_token")
     T.truthy(t_cmd, "токен создан через чат-команду token_spawn")
     T.eq(t_cmd.cell.cx, 3, "cx = 3")
@@ -384,7 +384,7 @@ T.test("block_interceptor: регистрирует синхронизацию �
     for scheme, cmd in pairs(registered_commands) do
         if scheme:find("token_move") then move_cmd = cmd; break end
     end
-    move_cmd.handler({ id = "cmd_token", cx = "10", cz = "20" }, { account = { identity = "gm_admin", role = "master" } })
+    move_cmd.handler({ id = "cmd_token", cx = "10", cz = "20" }, { account = { identity = "gm_admin", role = "master", is_logged = true } })
     T.eq(t_cmd.cell.cx, 10, "cx перемещен на 10")
     T.eq(t_cmd.cell.cz, 20, "cz перемещен на 20")
 
@@ -393,7 +393,7 @@ T.test("block_interceptor: регистрирует синхронизацию �
     for scheme, cmd in pairs(registered_commands) do
         if scheme:find("token_remove") then remove_cmd = cmd; break end
     end
-    remove_cmd.handler({ id = "cmd_token" }, { account = { identity = "gm_admin", role = "master" } })
+    remove_cmd.handler({ id = "cmd_token" }, { account = { identity = "gm_admin", role = "master", is_logged = true } })
     T.eq(tokens.get("cmd_token"), nil, "токен удален через чат-команду token_remove")
 end)
 
@@ -543,7 +543,7 @@ T.test("block_interceptor: send_move_token и register_server_messages чере�
 
     -- Сервер принимает сообщение от клиента-Мастера
     local mock_client = {
-        account = { identity = "GM_User", role = "master" },
+        account = { identity = "GM_User", role = "master", is_logged = true },
     }
     local handler = message_handlers["MoveToken"]
     handler(mock_client, sent_messages[1].data)
@@ -684,7 +684,7 @@ T.test("block_interceptor: MoveToken с ролью master -> успех; с об
 
     -- 1. Игрок bob пытается двигать токен alice -> отказ, координаты не меняются
     local client_bob = {
-        account = { identity = "bob", role = "player" },
+        account = { identity = "bob", role = "player", is_logged = true },
     }
     handler(client_bob, { payload = { token_id = "alice_token", target_cell = { cx = 1, cz = 1, level = 0 } } })
     T.eq(tokens.get("alice_token").cell.cx, 0)
@@ -692,7 +692,7 @@ T.test("block_interceptor: MoveToken с ролью master -> успех; с об
 
     -- 2. Мастер двигает токен alice на любую дистанцию -> успех
     local client_master = {
-        account = { identity = "gm_admin", role = "master" },
+        account = { identity = "gm_admin", role = "master", is_logged = true },
     }
     handler(client_master, { payload = { token_id = "alice_token", target_cell = { cx = 10, cz = 10, level = 0 } } })
     T.eq(tokens.get("alice_token").cell.cx, 10)

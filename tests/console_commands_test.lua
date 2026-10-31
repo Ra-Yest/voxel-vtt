@@ -68,7 +68,7 @@ T.test("console: token_spawn от master создает токен; от member 
     T.truthy(cmd ~= nil, "команда token_spawn должна быть зарегистрирована")
 
     -- 1. Вызов от member -> отказ
-    local client_member = { account = { identity = "bob", role = "member" } }
+    local client_member = { account = { identity = "bob", role = "member", is_logged = true } }
     cmd.handler({ cx = 1, cz = 2, id = "t1", owner = "alice" }, client_member)
 
     T.eq(spawn_calls, 0, "tokens.spawn не должен вызываться для member")
@@ -77,7 +77,7 @@ T.test("console: token_spawn от master создает токен; от member 
     T.truthy(told[#told].text:find("Только Мастер"), "сообщение об отказе прав Мастера")
 
     -- 2. Вызов от master -> успех
-    local client_master = { account = { identity = "gm", role = "master" } }
+    local client_master = { account = { identity = "gm", role = "master", is_logged = true } }
     cmd.handler({ cx = 1, cz = 2, id = "t1", owner = "alice" }, client_master)
 
     T.eq(spawn_calls, 1, "tokens.spawn вызван 1 раз для master")
@@ -105,7 +105,7 @@ T.test("console: token_spawn с уже занятым id дает отказ, и
     block_interceptor.register_token_commands(api, commands)
 
     local cmd = cmds["token_spawn"]
-    local client_master = { account = { identity = "gm", role = "master" } }
+    local client_master = { account = { identity = "gm", role = "master", is_logged = true } }
 
     cmd.handler({ cx = 5, cz = 5, id = "t1", owner = "eve" }, client_master)
 
@@ -139,7 +139,7 @@ T.test("console: token_move: единая политика перемещени�
     T.truthy(cmd ~= nil, "команда token_move зарегистрирована")
 
     -- А. Master двигает любой токен на любую дистанцию (> 5 клеток: (0,0) -> (10,10))
-    local client_master = { account = { identity = "gm", role = "master" } }
+    local client_master = { account = { identity = "gm", role = "master", is_logged = true } }
     cmd.handler({ id = "t1", cx = 10, cz = 10 }, client_master)
     T.eq(move_calls, 1, "токен сдвинут мастером")
     T.eq(registry["t1"].cell.cx, 10)
@@ -149,7 +149,7 @@ T.test("console: token_move: единая политика перемещени�
     move_calls = 0
 
     -- Б. Member двигает чужой токен (bob пытается двигать токен alice t1) -> отказ по владельцу
-    local client_bob = { account = { identity = "bob", role = "member" } }
+    local client_bob = { account = { identity = "bob", role = "member", is_logged = true } }
     cmd.handler({ id = "t1", cx = 1, cz = 1 }, client_bob)
     T.eq(move_calls, 0, "чужой токен не должен сдвинуться")
     T.eq(registry["t1"].cell.cx, 0)
@@ -162,7 +162,7 @@ T.test("console: token_move: единая политика перемещени�
     T.truthy(told[#told].text:find("Нет прав на управление данным токеном", 1, true), "текст отказа: Нет прав на управление данным токеном")
 
     -- Г. Member-владелец на расстояние > 5 клеток (alice пытается двигать t1 из (0,0) в (10,10)) -> "Слишком далеко"
-    local client_alice = { account = { identity = "alice", role = "member" } }
+    local client_alice = { account = { identity = "alice", role = "member", is_logged = true } }
     cmd.handler({ id = "t1", cx = 10, cz = 10 }, client_alice)
     T.eq(move_calls, 0, "токен не должен сдвинуться при превышении дальности")
     T.eq(registry["t1"].cell.cx, 0)
@@ -197,13 +197,13 @@ T.test("console: token_remove: master удаляет; member отказ", functi
     local cmd = cmds["token_remove"]
 
     -- 1. member -> отказ
-    local client_member = { account = { identity = "alice", role = "member" } }
+    local client_member = { account = { identity = "alice", role = "member", is_logged = true } }
     cmd.handler({ id = "t1" }, client_member)
     T.eq(remove_calls, 0)
     T.truthy(registry["t1"] ~= nil)
 
     -- 2. master -> успех
-    local client_master = { account = { identity = "gm", role = "master" } }
+    local client_master = { account = { identity = "gm", role = "master", is_logged = true } }
     cmd.handler({ id = "t1" }, client_master)
     T.eq(remove_calls, 1)
     T.eq(registry["t1"], nil)
@@ -230,12 +230,12 @@ T.test("console: token_owner: master меняет и снимает владел
     T.truthy(cmd ~= nil, "команда token_owner зарегистрирована")
 
     -- 1. member -> отказ
-    local client_member = { account = { identity = "bob", role = "member" } }
+    local client_member = { account = { identity = "bob", role = "member", is_logged = true } }
     cmd.handler({ id = "t1", owner = "bob" }, client_member)
     T.eq(registry["t1"].owner_id, "alice")
 
     -- 2. master меняет на bob
-    local client_master = { account = { identity = "gm", role = "master" } }
+    local client_master = { account = { identity = "gm", role = "master", is_logged = true } }
     cmd.handler({ id = "t1", owner = "bob" }, client_master)
     T.eq(registry["t1"].owner_id, "bob")
 
@@ -264,12 +264,12 @@ T.test("console: block_set: master вызывает world.set_block; member от
     T.truthy(cmd ~= nil, "команда block_set зарегистрирована")
 
     -- 1. member -> отказ
-    local client_member = { account = { identity = "bob", role = "member" } }
+    local client_member = { account = { identity = "bob", role = "member", is_logged = true } }
     cmd.handler({ x = 10, y = 20, z = 30, id = 5 }, client_member)
     T.eq(set_block_calls, 0, "world.set_block не должен вызываться для member")
 
     -- 2. master -> успех
-    local client_master = { account = { identity = "gm", role = "master" } }
+    local client_master = { account = { identity = "gm", role = "master", is_logged = true } }
     cmd.handler({ x = 10, y = 20, z = 30, id = 5 }, client_master)
     T.eq(set_block_calls, 1, "world.set_block вызван ровно 1 раз для master")
     T.eq(last_set.x, 10)
@@ -317,7 +317,7 @@ T.test("console: при отсутствии api.console.tell ошибки не�
     block_interceptor.register_token_commands(api, commands)
 
     local cmd = cmds["token_spawn"]
-    local client = { account = { identity = "bob", role = "member" } }
+    local client = { account = { identity = "bob", role = "member", is_logged = true } }
 
     local ok = pcall(function()
         cmd.handler({ cx = 1, cz = 1 }, client)
@@ -379,7 +379,7 @@ T.test("identity: label, is_master, однократный лог пары", fun
         orig_sink(line)
     end
 
-    local test_client = { account = { identity = "user_cache_test", role = "master" } }
+    local test_client = { account = { identity = "user_cache_test", role = "master", is_logged = true } }
     identity.sender_of(test_client)
     identity.sender_of(test_client)
     identity.sender_of(test_client)
@@ -474,8 +474,8 @@ T.test("console: лог результата команд: единый форм
         orig_sink(line)
     end
 
-    local client_master = { account = { identity = "gm", role = "master" } }
-    local client_member = { account = { identity = "bob", role = "member" } }
+    local client_master = { account = { identity = "gm", role = "master", is_logged = true } }
+    local client_member = { account = { identity = "bob", role = "member", is_logged = true } }
 
     -- 1. token_move успех (master)
     cmds["token_move"].handler({ id = "t1", cx = 1, cz = 1 }, client_master)
@@ -574,7 +574,7 @@ T.test("console: init(api, world_mock, options): block_set от master вызы�
     local cmd = cmds["block_set"]
     T.truthy(cmd ~= nil, "команда block_set зарегистрирована через init")
 
-    local client_master = { account = { identity = "gm", role = "master" } }
+    local client_master = { account = { identity = "gm", role = "master", is_logged = true } }
     cmd.handler({ x = 7, y = 8, z = 9, id = 2 }, client_master)
 
     T.truthy(world_mock_called, "world_mock.set_block должен быть вызван (world_module не должен теряться в init)")

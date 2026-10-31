@@ -1,5 +1,5 @@
 === Проверка белого списка API ===
-Записей: 467 | подтверждено по имени: 370 | слабое совпадение: 97 | неверный путь: 0 | нет файла/ссылки: 0 | не найдено: 0
+Записей: 469 | подтверждено по имени: 371 | слабое совпадение: 98 | неверный путь: 0 | нет файла/ссылки: 0 | не найдено: 0
 
 --- ПРОБЛЕМЫ (вероятно выдумано или неверная ссылка) ---
 нет
@@ -197,6 +197,8 @@ api.messages.new  [только имя функции, messages.md]
       > Сообщение можно сразу, в момент вызова new.
 api.replications.new  [только имя функции, replications.md]
       > Репликатора можно сразу, в момент вызова new.
+player.region_pos  [только имя функции, extra-classes.md]
+      > self.region_pos = {     -- Позиция региона 64×64×64 чанка, в котором нахо...
 player.username  [только имя функции, extra-classes.md]
       > self.username = string  -- Имя игрока
 
@@ -359,6 +361,8 @@ api.inventory_data.deserialize  [полное имя, inventory-data.md]
       > api.inventory_data.deserialize(bytes: Bytearray) -> table
 api.inventory_data.serialize  [полное имя, inventory-data.md]
       > api.inventory_data.serialize(inv: table) -> Bytearray
+api.protocol.tell  [без префикса api, protocol.md]
+      > protocol.tell(client, packet_type, data)
 api.register_as_shell  [полное имя, index.md]
       > api.register_as_shell(contract)
 api.rpc.emitter.create_echo  [полное имя, rpc.md]

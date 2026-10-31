@@ -19,6 +19,7 @@ local files = {
     "tests/identity_test.lua",
     "tests/console_commands_test.lua",
     "tests/block_guard_test.lua",
+    "tests/world_test.lua",
 }
 
 for _, f in ipairs(files) do dofile(f) end

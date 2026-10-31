@@ -1,10 +1,11 @@
 -- server/world.lua
 -- Слой: server
--- Спека: specs/server-world.md
+-- Спека: specs/server-world.md, specs/net-block-revert.md
 -- Назначение: Единственная точка входа для всех изменений блоков воксельного мира на сервере.
 -- Публичные функции:
 --   set_block(x, y, z, id, states)
 --   get_block(x, y, z)
+--   get_block_state(x, y, z)
 --   get_block_name(x, y, z)
 --   set_cell_blocks(cx, cz, y, id, states)
 --   raycast(start_pos, dir, max_dist)
@@ -26,6 +27,24 @@ end
 function M.get_block(x, y, z)
     -- docs: docs/engine/scripting/builtins/libblock.md:24: block.get(x: int, y: int, z: int) -> int
     return block.get(x, y, z)
+end
+
+-- Получение ID и состояния блока по координатам
+-- Возвращает id, state или nil, если блок не загружен или некорректен
+function M.get_block_state(x, y, z)
+    -- docs: docs/engine/scripting/builtins/libblock.md:24: block.get(x: int, y: int, z: int) -> int
+    local id = block.get(x, y, z)
+    if id == nil or id < 0 then
+        return nil
+    end
+
+    -- docs: docs/engine/scripting/builtins/libblock.md:28: block.get_states(x: int, y: int, z: int) -> int
+    local state = block.get_states(x, y, z)
+    if state == nil or state < 0 then
+        return nil
+    end
+
+    return id, state
 end
 
 -- Получение строкового имени блока по координатам

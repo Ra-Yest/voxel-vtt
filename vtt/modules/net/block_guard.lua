@@ -1,8 +1,8 @@
 -- net/block_guard.lua
--- Слой: net (сетевой перехватчик защиты мира Neutron)
--- Спека: specs/net-block-guard.md
+-- Слой: net (сетевой перехватчик защиты мира Neutron с откатом блоков)
+-- Спека: specs/net-block-guard.md, specs/net-block-revert.md
 -- Назначение: Защита мира от изменения игроками (не-Мастерами). Перехватывает входящие пакеты
---             изменения блоков и спавна/взаимодействия с сущностями и отбрасывает их.
+--             изменения блоков и сущностей, отбрасывает их и отправляет пакет коррекции (откат).
 
 local log = require("core/log")
 local gm_rules = require("core/gm_rules")
@@ -10,7 +10,102 @@ local identity = require("net/identity")
 
 local M = {}
 
+M.api = nil
+M.opts = nil
+
 local denial_counts = {}
+
+local BLOCK_PACKETS = {
+    BlockUpdate = true,
+    BlockDestroy = true,
+    BlockInteract = true,
+    BlockRegionUpdate = true,
+    BlockRegionDestroy = true,
+    BlockRegionInteract = true,
+}
+
+-- Отправка пакета коррекции (отката) реального состояния блока клиенту
+local function send_correction(client, name, original)
+    if not BLOCK_PACKETS[name] then
+        return
+    end
+
+    if not M.api or not M.api.protocol or type(M.api.protocol.tell) ~= "function" then
+        return
+    end
+
+    if not M.opts or type(M.opts.read_block) ~= "function" then
+        return
+    end
+
+    local is_region = name == "BlockRegionUpdate" or name == "BlockRegionDestroy" or name == "BlockRegionInteract"
+    local raw_pos = nil
+
+    if name == "BlockUpdate" or name == "BlockRegionUpdate" then
+        if type(original) == "table" and type(original.block) == "table" and type(original.block.pos) == "table" then
+            raw_pos = original.block.pos
+        elseif type(original) == "table" and type(original.pos) == "table" then
+            raw_pos = original.pos
+        end
+    else
+        if type(original) == "table" and type(original.pos) == "table" then
+            raw_pos = original.pos
+        end
+    end
+
+    if not raw_pos or type(raw_pos.x) ~= "number" or type(raw_pos.y) ~= "number" or type(raw_pos.z) ~= "number" then
+        log("block_guard_correction_skipped", { name = name, reason = "invalid_pos" })
+        return
+    end
+
+    local abs_x, abs_y, abs_z
+    if is_region then
+        local region = identity.region_of(client)
+        if not region then
+            log("block_guard_correction_skipped", { name = name, reason = "no_region" })
+            return
+        end
+        abs_x = region.x * 64 + raw_pos.x
+        abs_y = raw_pos.y
+        abs_z = region.z * 64 + raw_pos.z
+    else
+        abs_x = raw_pos.x
+        abs_y = raw_pos.y
+        abs_z = raw_pos.z
+    end
+
+    if abs_y < 0 or abs_y > 255 then
+        log("block_guard_correction_skipped", { name = name, reason = "bad_y" })
+        return
+    end
+
+    local id, state = M.opts.read_block(abs_x, abs_y, abs_z)
+    if id == nil or state == nil then
+        log("block_guard_correction_skipped", { name = name, reason = "read_failed" })
+        return
+    end
+
+    local block_changed_id = (M.api.protocol and M.api.protocol.ServerMsg and M.api.protocol.ServerMsg.BlockChanged)
+        or (M.api.interceptors and M.api.interceptors.packets and M.api.interceptors.packets.ServerMsg and M.api.interceptors.packets.ServerMsg.BlockChanged)
+    if not block_changed_id then
+        log("block_guard_correction_skipped", { name = name, reason = "no_packet_id" })
+        return
+    end
+
+    -- docs: docs/neutron/api/libraries/protocol.md:22: protocol.tell(client, packet_type, data)
+    M.api.protocol.tell(client, block_changed_id, {
+        pid = -1,
+        block = {
+            id = id,
+            state = state,
+            pos = {
+                x = abs_x,
+                y = abs_y,
+                z = abs_z,
+            },
+        },
+    })
+end
 
 -- Создание функции-обработчика для перехвата пакета по имени
 function M.make_guard(name)
@@ -37,6 +132,17 @@ function M.make_guard(name)
                 })
             end
 
+            -- Отправка пакета коррекции (отката) при отказе
+            local ok_corr, err_corr = pcall(function()
+                send_correction(client, name, original)
+            end)
+            if not ok_corr then
+                log("block_guard_error", {
+                    name = name,
+                    error = tostring(err_corr),
+                })
+            end
+
             return false
         end)
 
@@ -55,7 +161,7 @@ end
 -- Инициализация серверного перехватчика
 -- docs: docs/neutron/api/libraries/interceptors.md:20: api.interceptors.receive.add_interceptor(packet_type, interceptor)
 -- docs: docs/neutron/api/libraries/interceptors.md:14: api.interceptors.packets.ClientMsg
-function M.init(api)
+function M.init(api, opts)
     if not api then
         log("block_guard_unprotected", { part = "api" })
         return false
@@ -76,6 +182,18 @@ function M.init(api)
         return false
     end
 
+    M.api = api
+    M.opts = opts or {}
+
+    local has_protocol = type(api.protocol) == "table" and type(api.protocol.tell) == "function"
+    local has_reader = type(M.opts) == "table" and type(M.opts.read_block) == "function"
+    if not has_protocol or not has_reader then
+        log("block_guard_correction_unavailable", {
+            has_protocol = has_protocol,
+            has_reader = has_reader,
+        })
+    end
+
     denial_counts = {}
     local missing = {}
     local registered_count = 0
@@ -87,9 +205,16 @@ function M.init(api)
             table.insert(missing, name)
             log("block_guard_packet_missing", { name = name })
         else
-            -- docs: docs/neutron/api/libraries/interceptors.md:20: api.interceptors.receive.add_interceptor(packet_type, interceptor)
-            api.interceptors.receive.add_interceptor(packet_id, M.make_guard(name))
-            registered_count = registered_count + 1
+            local reg_ok, reg_err = pcall(function()
+                -- docs: docs/neutron/api/libraries/interceptors.md:20: api.interceptors.receive.add_interceptor(packet_type, interceptor)
+                api.interceptors.receive.add_interceptor(packet_id, M.make_guard(name))
+            end)
+            if not reg_ok then
+                table.insert(missing, name)
+                log("block_guard_error", { name = name, error = tostring(reg_err) })
+            else
+                registered_count = registered_count + 1
+            end
         end
     end
 
