@@ -4,5 +4,5 @@
 |---|---|---|---|
 | VoxelCore | Игровой движок | MPL 2.0 | Вся среда исполнения, проект работает как контент-пак |
 | Neutron | Сетевая библиотека | MIT | Вызовы API в `vtt/modules/net/`, код не копируется |
-| Модель игрока `player-*.vec3` | 3D-модель | `vtt/models/`, взята из исходников VoxelCore |
-| Текстура `player.png` | Текстура модели | `vtt/textures/entities/` |
+| Модель игрока `player-*.vec3` | 3D-модель | |`vtt/models/`, взята из исходников VoxelCore |
+| Текстура `player.png` | Текстура модели | |`vtt/textures/entities/` |
