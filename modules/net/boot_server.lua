@@ -28,13 +28,21 @@ function M.start(api, deps)
     local block_guard = require("net/block_guard")
 
     local all_ok = true
+    local failed = {}
     local has_execute = (type(deps.execute) == "function")
 
-    local function run_step(part_name, fn)
-        local ok, err = pcall(fn)
+    local function run_step(part_name, fn, expect_true)
+        local ok, res = pcall(fn)
         if not ok then
             all_ok = false
-            log("net_boot_error", { part = part_name, error = tostring(err) })
+            table.insert(failed, part_name)
+            log("net_boot_error", { part = part_name, error = tostring(res) })
+            return false
+        end
+        if res == false or (expect_true and res ~= true) then
+            all_ok = false
+            table.insert(failed, part_name)
+            log("net_boot_error", { part = part_name, error = "returned false" })
             return false
         end
         return true
@@ -42,49 +50,51 @@ function M.start(api, deps)
 
     -- 1. channel.init(api)
     run_step("channel", function()
-        channel.init(api)
-    end)
+        return channel.init(api)
+    end, false)
 
     -- 2. identity.init(api)
     run_step("identity", function()
-        identity_mod.init(api)
-    end)
+        return identity_mod.init(api)
+    end, false)
 
     -- 3. lifecycle.init(api)
     run_step("lifecycle", function()
-        lifecycle.init(api)
-    end)
+        return lifecycle.init(api)
+    end, true)
 
     -- 4. token_entity.register_server(api, deps.token_id_of)
     run_step("token_entity", function()
-        token_entity.register_server(api, deps.token_id_of)
-    end)
+        return token_entity.register_server(api, deps.token_id_of)
+    end, true)
 
     -- 5 & 6. console и intents (только при наличии deps.execute)
     if has_execute then
         run_step("console", function()
-            console_mod.register(api, deps.execute)
-        end)
+            return console_mod.register(api, deps.execute)
+        end, true)
         run_step("intents", function()
-            intents.serve(deps.execute)
-        end)
+            return intents.serve(deps.execute)
+        end, true)
     else
         all_ok = false
+        table.insert(failed, "console")
+        table.insert(failed, "intents")
     end
 
     -- 7. block_guard.init(api, { read_block = deps.read_block }) (всегда, даже без execute)
     run_step("block_guard", function()
-        block_guard.init(api, { read_block = deps.read_block })
-    end)
+        return block_guard.init(api, { read_block = deps.read_block })
+    end, true)
 
-    if all_ok and has_execute then
+    if all_ok and #failed == 0 and has_execute then
         log("net_boot", { status = "ok" })
         return true
     elseif not has_execute then
-        log("net_boot", { status = "partial", reason = "no_execute" })
+        log("net_boot", { status = "partial", reason = "no_execute", failed = failed })
         return false
     else
-        log("net_boot", { status = "partial" })
+        log("net_boot", { status = "partial", failed = failed })
         return false
     end
 end

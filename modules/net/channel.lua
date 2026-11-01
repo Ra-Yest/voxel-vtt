@@ -1,6 +1,6 @@
 -- net/channel.lua
 -- Слой: net (единственная прослойка над Neutron)
--- Спека: specs/net-channel.md
+-- Спека: specs/net-channel.md, specs/net-client-server-handle.md
 -- Назначение: Изоляция сетевого API Neutron (Message, Replication) для сервера и клиента.
 -- Публичные функции:
 --   init(api)
@@ -9,6 +9,9 @@
 --   on(msg_name, callback)
 --   replicate(name, id, initial_data, is_server)
 --   get_replica(name, id)
+--   ensure_client_server()
+
+local log = require("core/log")
 
 local M = {}
 
@@ -17,6 +20,8 @@ M.api = nil
 local messages = {}
 local replicators = {}
 local replicas = {}
+local logged_reasons = {}
+local logged_send_failures = {}
 
 -- Инициализация ссылок на подсистемы Neutron
 function M.init(api)
@@ -101,16 +106,88 @@ local function get_or_create_replicator(name, schema)
     return replicators[name]
 end
 
+-- Диагностика и ленивый обход изоляции SERVER на клиенте Neutron 0.4.0 (specs/net-client-server-handle.md)
+-- Допустимо писать в _G.SERVER только здесь; ключ 'neutron-client-env' подтверждён кодом Neutron-Client 0.4.0.
+function M.ensure_client_server()
+    -- 1. Если rawget(_G, "SERVER") ~= nil: вернуть true, "already" без лога.
+    if rawget(_G, "SERVER") ~= nil then
+        return true, "already"
+    end
+
+    -- 2. Если session не таблица или нет session.has и session.get: log("neutron_client_env_missing", {part = "session"}), вернуть false, "no_session".
+    local sess = rawget(_G, "session")
+    if type(sess) ~= "table" or type(sess.has) ~= "function" or type(sess.get) ~= "function" then
+        if not logged_reasons["no_session"] then
+            logged_reasons["no_session"] = true
+            log("neutron_client_env_missing", { part = "session" })
+        end
+        return false, "no_session"
+    end
+
+    -- 3. Если not session.has("neutron-client-env"): log("neutron_client_env_missing", {part = "env"}), вернуть false, "no_env".
+    -- docs: docs/engine/scripting/builtins/libsession.md:17: session.has(name: str) -> boolean
+    local has_ok, has_env = pcall(sess.has, "neutron-client-env")
+    if not has_ok or not has_env then
+        if not logged_reasons["no_env"] then
+            logged_reasons["no_env"] = true
+            log("neutron_client_env_missing", { part = "env" })
+        end
+        return false, "no_env"
+    end
+
+    -- 4. env = session.get("neutron-client-env"); если env.SERVER == nil: log("neutron_client_server_unavailable", {g_server = false, env_server = false}), вернуть false, "no_server_in_env".
+    -- docs: docs/engine/scripting/builtins/libsession.md:11: session.get(name: str) -> table
+    local get_ok, env = pcall(sess.get, "neutron-client-env")
+    if not get_ok or type(env) ~= "table" or env.SERVER == nil then
+        if not logged_reasons["no_server_in_env"] then
+            logged_reasons["no_server_in_env"] = true
+            log("neutron_client_server_unavailable", { g_server = false, env_server = false })
+        end
+        return false, "no_server_in_env"
+    end
+
+    -- 5. Иначе _G.SERVER = env.SERVER, log("neutron_client_server_patched", {neutron = "0.4.0"}), вернуть true, "patched".
+    _G.SERVER = env.SERVER
+    log("neutron_client_server_patched", { neutron = "0.4.0" })
+    return true, "patched"
+end
+
 -- Отправка сообщения: на клиенте на сервер, на сервере клиенту
 function M.send(msg_name, payload, target_client)
     local msg = get_or_create_message(msg_name)
     if target_client then
         -- docs: docs/neutron/api/libraries/messages.md:119: Message:tell(client: Client, data: table)
         msg:tell(target_client, { payload = payload })
-    else
+        return true
+    end
+
+    -- Клиентская ветка отправки на сервер
+    local ok, reason = M.ensure_client_server()
+    if not ok then
+        local err_key = tostring(msg_name) .. ":" .. tostring(reason)
+        if not logged_send_failures[err_key] then
+            logged_send_failures[err_key] = true
+            log("channel_send_failed", { name = msg_name, reason = reason })
+        end
+        return false
+    end
+
+    local send_ok, send_err = pcall(function()
         -- docs: docs/neutron/api/libraries/messages.md:135: Message:send(data: table)
         msg:send({ payload = payload })
+    end)
+
+    if not send_ok then
+        local err_str = tostring(send_err)
+        local err_key = tostring(msg_name) .. ":" .. err_str
+        if not logged_send_failures[err_key] then
+            logged_send_failures[err_key] = true
+            log("channel_send_failed", { name = msg_name, error = err_str })
+        end
+        return false
     end
+
+    return true
 end
 
 -- Рассылка сообщения всем подключённым клиентам (сервер)

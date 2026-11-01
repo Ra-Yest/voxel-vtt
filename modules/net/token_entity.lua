@@ -1,9 +1,10 @@
 -- net/token_entity.lua
 -- Слой: net (единственное место, где вызывается Neutron)
--- Спека: specs/net-split-server.md
--- Назначение: Регистрация синхронизации сущности vtt:token в Neutron на сервере.
+-- Спека: specs/net-split-server.md, specs/net-split-client.md
+-- Назначение: Регистрация синхронизации сущности vtt:token в Neutron на сервере и клиенте.
 -- Публичные функции:
 --   register_server(api, token_id_of) -> boolean
+--   register_client(api, on_update) -> boolean
 
 local log = require("core/log")
 
@@ -63,6 +64,53 @@ function M.register_server(api, token_id_of)
         },
     })
     log("token_sync_registered", { entity = "vtt:token" })
+    return true
+end
+
+-- Регистрация клиентского обработчика синхронизации сущности vtt:token
+function M.register_client(api, on_update)
+    if not (api and api.entities and api.entities.set_handler) then
+        log("neutron_api_missing", { part = "entities" })
+        return false
+    end
+
+    -- docs: docs/neutron/api/libraries/entities.md:284: api.entities.set_handler(entities_tbl, handler)
+    api.entities.set_handler({ "vtt:token" }, function(uid, def, dirty)
+        local fresh = {}
+        if type(dirty) == "table" then
+            fresh.token_id = dirty.token_id
+            fresh.pos = dirty.pos
+        end
+
+        local initial = {}
+        if type(def) == "table" then
+            initial.token_id = def.token_id
+            initial.pos = def.pos
+        end
+
+        if on_update then
+            local ok, err = pcall(on_update, uid, fresh, initial)
+            if not ok then
+                log("token_client_update_error", { uid = uid, error = tostring(err) })
+            end
+        end
+
+        if fresh.pos then
+            -- docs: docs/engine/scripting/builtins/libentities.md:23: entities.get(uid: int) -> table
+            local ent = (entities and entities.get and entities.get(uid)) or (_G.entities and _G.entities.get and _G.entities.get(uid))
+            if ent then
+                -- docs: docs/engine/scripting/ecs.md:65: local tsf = entity.transform
+                local tsf = ent.transform or (ent.get_component and ent:get_component("transform"))
+                if tsf and tsf.set_pos then
+                    -- docs: docs/engine/scripting/ecs.md:70: tsf:set_pos(pos:vec3)
+                    tsf:set_pos(fresh.pos)
+                    log("token_client_moved", { uid = uid, pos = fresh.pos })
+                end
+            end
+        end
+    end)
+
+    log("token_client_handler_registered", { entity = "vtt:token" })
     return true
 end
 

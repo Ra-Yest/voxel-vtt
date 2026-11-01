@@ -34,8 +34,8 @@ function on_world_open()
             -- docs: docs/neutron/api/index.md:32: local api = require(string.format("%s:api/%s/api", m.pack_id, m.api_references.Neutron[2]))[m.side]
             local api = require(string.format("%s:api/%s/api", m.pack_id, m.api_references.Neutron[2]))[m.side]
 
-            local block_interceptor = require("net/block_interceptor")
-            block_interceptor.init_client(api)
+            local client_tokens = require("client/tokens")
+            require("net/boot_client").start(api, { on_token = client_tokens.on_entity })
         end
     end
 end

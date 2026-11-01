@@ -6,7 +6,7 @@ local camera = require("client/camera")
 local picking = require("client/picking")
 local overlay = require("client/overlay")
 local grid = require("core/grid")
-local block_interceptor = require("net/block_interceptor")
+local tokens = require("client/tokens")
 local log = require("core/log")
 
 -- Последняя подсвеченная курсором клетка стола
@@ -66,13 +66,13 @@ local function handle_tactical_click()
         local uid = nil
 
         if token_ent ~= nil then
-            tok_info = block_interceptor.get_client_token(token_ent)
+            tok_info = tokens.get_by_entity(token_ent)
             uid = type(token_ent) == "table" and (token_ent.uid or (token_ent.get_uid and token_ent:get_uid())) or token_ent
         end
 
         -- Запасной поиск токена по клетке курсора, если луч рейкаста попал в блок под токеном
         if not tok_info and cursor_cell ~= nil then
-            tok_info, uid = block_interceptor.get_client_token_by_cell(cursor_cell.cx, cursor_cell.cz)
+            tok_info, uid = tokens.get_by_cell(cursor_cell.cx, cursor_cell.cz)
         end
 
         if tok_info ~= nil then
@@ -128,7 +128,7 @@ local function handle_tactical_click()
     if reachable_map and reachable_map[cell_k] then
         -- Клик внутри доступной зоны: отправляем MoveToken на сервер
         local target = { cx = cursor_cell.cx, cz = cursor_cell.cz, level = cursor_cell.level or 0 }
-        block_interceptor.send_move_token(selected_token.token_id, target, selected_token.cell)
+        tokens.send_move(selected_token.token_id, target, selected_token.cell)
         log("token_move_intent", {
             token_id = selected_token.token_id,
             from = selected_token.cell,

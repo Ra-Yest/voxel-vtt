@@ -12,6 +12,11 @@ local M = {}
 
 -- Регистрация приёма серверных сообщений (в т.ч. MoveToken)
 function M.serve(execute)
+    if type(execute) ~= "function" then
+        log("intents_not_started", { reason = "no_execute" })
+        return false
+    end
+
     local channel = require("net/channel")
     local subscribed = false
     local ok_sub, err_sub = pcall(function()
@@ -31,9 +36,7 @@ function M.serve(execute)
                 })
 
                 local actor = { id = sender_id, is_master = identity_mod.is_master(role) }
-                if execute then
-                    return execute("MoveToken", actor, payload)
-                end
+                return execute("MoveToken", actor, payload)
             end)
             if not ok_h then
                 log("command_error", { name = "MoveToken", error = tostring(err_h) })
@@ -46,7 +49,7 @@ function M.serve(execute)
         log("server_messages_registered", { list = { "MoveToken" } })
         return true
     else
-        log("neutron_api_missing", { part = "messages" })
+        log("intents_subscribe_failed", { error = tostring(err_sub) })
         return false
     end
 end
