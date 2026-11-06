@@ -1,17 +1,18 @@
 -- net/intents.lua
 -- Слой: net (единственное место, где вызывается Neutron)
--- Спека: specs/net-split-server.md
+-- Спека: specs/net-split-server.md, specs/net-intents-reply.md
 -- Назначение: Приём сетевых намерений от клиентов (MoveToken) через Neutron channel.
 -- Публичные функции:
---   serve(execute) -> boolean
+--   serve(execute, api) -> boolean
 
 local log = require("core/log")
 local identity_mod = require("net/identity")
+local reply = require("net/reply")
 
 local M = {}
 
 -- Регистрация приёма серверных сообщений (в т.ч. MoveToken)
-function M.serve(execute)
+function M.serve(execute, api)
     if type(execute) ~= "function" then
         log("intents_not_started", { reason = "no_execute" })
         return false
@@ -25,6 +26,7 @@ function M.serve(execute)
                 local sender_id, role = identity_mod.sender_of(client)
                 if not sender_id then
                     log("auth_denied", { name = "MoveToken", reason = "sender_unknown" })
+                    reply.denied(api, client, "Не удалось определить отправителя")
                     return
                 end
 
@@ -36,7 +38,11 @@ function M.serve(execute)
                 })
 
                 local actor = { id = sender_id, is_master = identity_mod.is_master(role) }
-                return execute("MoveToken", actor, payload)
+                local ok, res = execute("MoveToken", actor, payload)
+                if ok == false then
+                    reply.denied(api, client, res)
+                end
+                return ok, res
             end)
             if not ok_h then
                 log("command_error", { name = "MoveToken", error = tostring(err_h) })

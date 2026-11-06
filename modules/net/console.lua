@@ -8,6 +8,7 @@
 
 local log = require("core/log")
 local identity_mod = require("net/identity")
+local reply = require("net/reply")
 
 local M = {}
 
@@ -35,26 +36,17 @@ local function run(api, execute, client, name, payload)
     local sender_id, role = identity_mod.sender_of(client)
     if sender_id == nil then
         log("auth_denied", { name = name, reason = "sender_unknown" })
-        if api and api.console and api.console.tell then
-            -- docs: docs/neutron/api/libraries/console.md:143: api.console.tell(message: string, client: Client)
-            pcall(function() api.console.tell("[Отказ] Не удалось определить отправителя (sender_unknown)", client) end)
-        end
+        reply.denied(api, client, "Не удалось определить отправителя (sender_unknown)")
         return false, "sender_unknown"
     end
 
     local actor = { id = sender_id, is_master = identity_mod.is_master(role) }
     local ok, res = execute(name, actor, payload)
 
-    if api and api.console and api.console.tell then
-        pcall(function()
-            if ok then
-                -- docs: docs/neutron/api/libraries/console.md:143: api.console.tell(message: string, client: Client)
-                api.console.tell("[Успех] Команда " .. name .. " выполнена", client)
-            else
-                -- docs: docs/neutron/api/libraries/console.md:143: api.console.tell(message: string, client: Client)
-                api.console.tell("[Отказ] " .. tostring(res or "Действие запрещено"), client)
-            end
-        end)
+    if ok then
+        reply.ok(api, client, "Команда " .. name .. " выполнена")
+    else
+        reply.denied(api, client, res)
     end
     return ok, res
 end

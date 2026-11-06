@@ -74,7 +74,7 @@ function M.start(api, deps)
             return console_mod.register(api, deps.execute)
         end, true)
         run_step("intents", function()
-            return intents.serve(deps.execute)
+            return intents.serve(deps.execute, api)
         end, true)
     else
         all_ok = false
